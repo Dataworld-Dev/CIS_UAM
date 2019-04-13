@@ -3,20 +3,20 @@ package com.dw.ngms.cis.uam.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dw.ngms.cis.uam.entity.Sector;
 import com.dw.ngms.cis.uam.service.SectorService;
 
 @RestController
-@RequestMapping("/sector")
+@RequestMapping("/cisorigin.uam/api/v1")
+@CrossOrigin(origins = "*")
 public class SectorController extends MessageController {
 	
     @Autowired
@@ -33,31 +33,15 @@ public class SectorController extends MessageController {
         }
     }//getAllSectors
     
-//    @RequestMapping(value = "/addSector", method = RequestMethod.POST,
-//            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Sector addSector(@RequestBody Sector sector) {
-//        return this.sectorService.addSector(sector);
-//    }
-//
-//    @RequestMapping(value = "/updateSector", method = RequestMethod.PUT,
-//            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Sector updateSector(@RequestBody Sector sector) {
-//        return this.sectorService.updateSector(sector);
-//    }
-//
-//    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-//    public Optional<Sector> getSector(@PathVariable int id) {
-//        return this.sectorService.getSectorById(id);
-//    }
-//
-//    @RequestMapping(value = "/all", method = RequestMethod.DELETE)
-//    public void deleteAllSectors() {
-//        this.sectorService.deleteAllSectors();
-//    }
-//
-//    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-//    public void deleteSector(@PathVariable int id) {
-//        this.sectorService.deleteSectorById(id);
-//    }
-    
+    @PostMapping("/createSector")
+    public ResponseEntity<?> createSector(HttpServletRequest request, @RequestBody @Valid Sector sector) {
+        try{
+        	sector = sectorService.addSector(sector);
+        	return (sector == null) ? generateEmptyResponse(request, "Failed to add sector") :
+				ResponseEntity.status(HttpStatus.OK).body("Successful");
+		} catch (Exception exception) {
+			return generateFailureResponse(request, exception);
+		}
+    }//createSector
+
 }

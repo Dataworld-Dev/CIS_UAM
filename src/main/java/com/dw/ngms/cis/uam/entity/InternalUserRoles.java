@@ -32,6 +32,8 @@ public class InternalUserRoles implements Serializable {
 
 	private static final long serialVersionUID = 1098484893268694655L;
 
+
+
 	@Id
     @Column(name = "USERROLEID")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,54 +41,45 @@ public class InternalUserRoles implements Serializable {
     
     @Column(name = "USERROLECODE", nullable = true, length = 50)
     @NotEmpty(message = "USER ROLE CODE must not be empty")
-    private String userRoleCode;
+    private String roleCode;
 
     @Column(name = "USERROLENAME", nullable = true, length = 50)
     @NotEmpty(message = "USER ROLE NAME must not be empty")
-    private String userRoleName;
+    private String roleName;
 
-//    @Column(name = "USERCODE", nullable = true, length = 50)
-//    @NotEmpty(message = "USER CODE must not be empty")
-//    private String userCode;
+    @Column(name = "USERCODE", nullable = true, length = 50)
+    @NotEmpty(message = "USER CODE must not be empty")
+    private String userCode;
 
     @Column(name = "USERNAME", nullable = true, length = 255)
     @NotEmpty(message = "USER NAME must not be empty")
     private String userName;
     
     @Column(name = "USERPROVINCECODE", nullable = true, length = 100)
-    @NotEmpty(message = "USER PROVINCE CODE must not be empty")
-    private String userProvinceCode;
+    private String provinceCode;
 
     @Column(name = "USERPROVINCENAME", nullable = true, length = 50)
-    @NotEmpty(message = "USER PROVINCE NAME must not be empty")
-    private String userProvinceName;
+    private String provinceName;
 
-    @Column(name = "USERSECTIONCODE", nullable = true, length = 100)
-    @NotEmpty(message = "USER SECTION CODE must not be empty")
-    private String userSectionCode;
+    @Column(name = "USERSECTIONCODE", nullable = false, length = 100)
+    private String sectionCode;
 
-    @Column(name = "USERSECTIONNAME", nullable = true, length = 50)
-    @NotEmpty(message = "USER SECTION NAME must not be empty")
-    private String userSectionName;
+    @Column(name = "USERSECTIONNAME", nullable = false, length = 50)
+    private String sectionName;
 
     @Column(name = "ISACTIVE", nullable = true, length = 10)
-    @NotEmpty(message = "Active status must not be empty")
-    private String isactive;
+    private String isActive;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "CREATEDDATE", nullable = true)
     Date createddate;
 
-    @Column(name = "SIGNEDACCESSDOCPATH")
+    @Column(name = "SIGNEDACCESSDOCPATH", nullable = false)
     private String signedAccessDocPath;
 
     @Column(name = "INTERNALROLECODE",length = 50)
     private String internalRoleCode;
-    
-//    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-//    @JoinColumn
-//    private List<User> users;
-    
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

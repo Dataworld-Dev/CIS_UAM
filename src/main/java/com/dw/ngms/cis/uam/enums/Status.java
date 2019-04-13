@@ -3,7 +3,7 @@ package com.dw.ngms.cis.uam.enums;
 public enum Status {
 
 	Y("Active"),
-	N("InActive");
+	N("Inactive");
 
 	String status;
 	

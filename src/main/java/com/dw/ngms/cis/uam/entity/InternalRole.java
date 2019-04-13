@@ -43,6 +43,8 @@ public class InternalRole implements Serializable {
     @NotEmpty(message = "ORG CODE must not be empty")
     private String organisationCode;
 
+
+
     @Column(name = "ORGNAME", nullable = true, length = 100)
     @NotEmpty(message = "ORG NAME must not be empty")
     private String organisationName;
@@ -71,16 +73,28 @@ public class InternalRole implements Serializable {
     @NotEmpty(message = "SECTION NAME must not be empty")
     private String sectionName;
 
+    @Column(name = "DESCRIPTION", nullable = true, length = 100)
+    private String description;
+
+
+
+/*    @Column(name = "ISACTIVE", nullable = true, length = 10)
+    //@NotEmpty(message = "Active status must not be empty")  //// TODO: Discuss with srinivas raju garu
+    private String isactive;*/
+
     @Column(name = "ISACTIVE", nullable = true, length = 10)
-    @NotEmpty(message = "Active status must not be empty")
     private String isactive;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "CREATEDDATE", nullable = true)
     Date createddate;
 
-    @Column(name = "ACCESSRIGHTJSON", length=2000)
+    @Column(name = "ACCESSRIGHTSJSON", length=2000)
     private String accessRightJson;
+
+    @Column(name = "DASHBOARDRIGHTSJSON", length=2000)
+    private String dashBoardRightJson;
+
 
     @Column(name = "INTERNALROLECODE",length = 50)
     private String internalRoleCode;

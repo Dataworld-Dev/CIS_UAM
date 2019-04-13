@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,8 @@ import com.dw.ngms.cis.uam.entity.Province;
 import com.dw.ngms.cis.uam.service.ProvinceService;
 
 @RestController
-@RequestMapping("/province")
+@RequestMapping("/cisorigin.uam/api/v1")
+@CrossOrigin(origins = "*")
 public class ProvinceController extends MessageController {
 	
 	@Autowired
@@ -32,32 +34,5 @@ public class ProvinceController extends MessageController {
             return generateFailureResponse(request, exception);
         }
     }//getAllProvinces
-    
-//    @RequestMapping(value = "/addProvince", method = RequestMethod.POST,
-//            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Province addProvince(@RequestBody Province province) {
-//        return this.provinceService.addProvince(province);
-//    }
-//
-//    @RequestMapping(value = "/updateProvince", method = RequestMethod.PUT,
-//            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Province updateProvince(@RequestBody Province province) {
-//        return this.provinceService.updateProvince(province);
-//    }
-//
-//    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-//    public Optional<Province> getProvince(@PathVariable int id) {
-//        return this.provinceService.getProvinceById(id);
-//    }
-//
-//    @RequestMapping(value = "/all", method = RequestMethod.DELETE)
-//    public void deleteAllProvinces() {
-//        this.provinceService.deleteAllProvinces();
-//    }
-//
-//    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-//    public void deleteProvince(@PathVariable int id) {
-//        this.provinceService.deleteProvinceById(id);
-//    }
     
 }
