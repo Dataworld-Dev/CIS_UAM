@@ -7,4 +7,5 @@ public class Constants {
 
    // public static final String uploadDirectoryPath = "/Users/swaroop/Documents/test-upload/";
    public static final String uploadDirectoryPath = "C:/Users/Administrator/Documents/signed/";
+   public static final String REPORT_RESOURCE_PATH = "C:/Users/Administrator/Documents/reports";
 }

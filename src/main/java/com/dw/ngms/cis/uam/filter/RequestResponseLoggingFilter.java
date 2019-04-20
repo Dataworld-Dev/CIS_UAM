@@ -36,12 +36,12 @@ public class RequestResponseLoggingFilter implements Filter {
 		ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
 		ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) response);
 		AuditEntry auditEntry = logRequestAuditEntry(requestWrapper);
-		log.info("Logging request :{}", auditEntry.toString());
+		log.trace("Logging request :{}", auditEntry.toString());
 		try {
             chain.doFilter(requestWrapper, responseWrapper);
         } finally {
         	auditEntry = logResponseAuditEntry(responseWrapper, auditEntry);
-        	log.info("Logging response :{}", auditEntry.getRequestUrl());
+        	log.trace("Logging response :{}", auditEntry.getRequestUrl());
             responseWrapper.copyBodyToResponse();
         }
 	}//doFilter	

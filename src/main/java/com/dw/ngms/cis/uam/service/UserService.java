@@ -2,15 +2,14 @@ package com.dw.ngms.cis.uam.service;
 
 import java.util.List;
 
-import com.dw.ngms.cis.uam.dto.ExternalUserDTO;
-import com.dw.ngms.cis.uam.dto.UserUpdateDTO;
-import com.dw.ngms.cis.uam.entity.ExternalUserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.dw.ngms.cis.uam.dto.UserDTO;
+import com.dw.ngms.cis.uam.dto.UserUpdateDTO;
 import com.dw.ngms.cis.uam.entity.ExternalUser;
+import com.dw.ngms.cis.uam.entity.ExternalUserRoles;
 import com.dw.ngms.cis.uam.entity.User;
 import com.dw.ngms.cis.uam.enums.ApprovalStatus;
 import com.dw.ngms.cis.uam.ldap.LdapClient;
@@ -257,23 +256,26 @@ public class UserService {
 		if(uiUser.getIsApprejDate() != null) user.setIsApprejDate(uiUser.getIsApprejDate());
 
 		ExternalUser externalUser = this.userRepository.getChildElements(uiUser.getUserCode());
-		user.setExternaluser(externalUser);
-		if(uiUser.getExternaluser().getOrganizationtypecode() != null && uiUser.getExternaluser().getOrganizationtypecode() != "")user.getExternaluser().setOrganizationtypecode(uiUser.getExternaluser().getOrganizationtypecode());
-		if(uiUser.getExternaluser().getOrganizationtypename() != null && uiUser.getExternaluser().getOrganizationtypecode() != "") user.getExternaluser().setOrganizationtypename(uiUser.getExternaluser().getOrganizationtypename());
-
-		if(uiUser.getExternaluser().getSectorCode() != null && uiUser.getExternaluser().getSectorCode() != ""){
-			user.getExternaluser().setSectorcode(uiUser.getExternaluser().getSectorCode());
+		if(externalUser != null)
+			user.setExternaluser(externalUser);			
+		if(uiUser.getExternaluser() != null) {
+			if(uiUser.getExternaluser().getOrganizationtypecode() != null && uiUser.getExternaluser().getOrganizationtypecode() != "")user.getExternaluser().setOrganizationtypecode(uiUser.getExternaluser().getOrganizationtypecode());
+			if(uiUser.getExternaluser().getOrganizationtypename() != null && uiUser.getExternaluser().getOrganizationtypecode() != "") user.getExternaluser().setOrganizationtypename(uiUser.getExternaluser().getOrganizationtypename());
+	
+			if(uiUser.getExternaluser().getSectorCode() != null && uiUser.getExternaluser().getSectorCode() != ""){
+				user.getExternaluser().setSectorcode(uiUser.getExternaluser().getSectorCode());
+			}
+			if(uiUser.getExternaluser().getSectorName() != null && uiUser.getExternaluser().getSectorName() != "") user.getExternaluser().setSectorname(uiUser.getExternaluser().getSectorName());
+			if(uiUser.getExternaluser().getPostaladdressline1() != null && uiUser.getExternaluser().getPostaladdressline1() != "") user.getExternaluser().setPostaladdressline1(uiUser.getExternaluser().getPostaladdressline1());
+			if(uiUser.getExternaluser().getPostaladdressline2() != null && uiUser.getExternaluser().getPostaladdressline2() != "") user.getExternaluser().setPostaladdressline2(uiUser.getExternaluser().getPostaladdressline2());
+			if(uiUser.getExternaluser().getPostaladdressline3() != null && uiUser.getExternaluser().getPostaladdressline3() != "") user.getExternaluser().setPostaladdressline3(uiUser.getExternaluser().getPostaladdressline3());
+			if(uiUser.getExternaluser().getPostalcode() != null && uiUser.getExternaluser().getPostalcode() != "") user.getExternaluser().setPostalcode(uiUser.getExternaluser().getPostalcode());
+			if(uiUser.getExternaluser().getCommunicationmodetypecode() != null && uiUser.getExternaluser().getCommunicationmodetypecode() != "") user.getExternaluser().setCommunicationmodetypecode(uiUser.getExternaluser().getCommunicationmodetypecode());
+			if(uiUser.getExternaluser().getCommunicationmodetypename() != null && uiUser.getExternaluser().getCommunicationmodetypename() != "") user.getExternaluser().setCommunicationmodetypename(uiUser.getExternaluser().getCommunicationmodetypename());
+			if(uiUser.getExternaluser().getSubscribenotifications() != null && uiUser.getExternaluser().getSubscribenotifications() != "") user.getExternaluser().setSubscribenotifications(uiUser.getExternaluser().getSubscribenotifications());
+			if(uiUser.getExternaluser().getSubscribeevents() != null && uiUser.getExternaluser().getSubscribeevents() != "") user.getExternaluser().setSubscribeevents(uiUser.getExternaluser().getSubscribeevents());
+			if(uiUser.getExternaluser().getSubscribenews() != null && uiUser.getExternaluser().getSubscribenews() != "") user.getExternaluser().setSubscribenews(uiUser.getExternaluser().getSubscribenews());
 		}
-		if(uiUser.getExternaluser().getSectorName() != null && uiUser.getExternaluser().getSectorName() != "") user.getExternaluser().setSectorname(uiUser.getExternaluser().getSectorName());
-		if(uiUser.getExternaluser().getPostaladdressline1() != null && uiUser.getExternaluser().getPostaladdressline1() != "") user.getExternaluser().setPostaladdressline1(uiUser.getExternaluser().getPostaladdressline1());
-		if(uiUser.getExternaluser().getPostaladdressline2() != null && uiUser.getExternaluser().getPostaladdressline2() != "") user.getExternaluser().setPostaladdressline2(uiUser.getExternaluser().getPostaladdressline2());
-		if(uiUser.getExternaluser().getPostaladdressline3() != null && uiUser.getExternaluser().getPostaladdressline3() != "") user.getExternaluser().setPostaladdressline3(uiUser.getExternaluser().getPostaladdressline3());
-		if(uiUser.getExternaluser().getPostalcode() != null && uiUser.getExternaluser().getPostalcode() != "") user.getExternaluser().setPostalcode(uiUser.getExternaluser().getPostalcode());
-		if(uiUser.getExternaluser().getCommunicationmodetypecode() != null && uiUser.getExternaluser().getCommunicationmodetypecode() != "") user.getExternaluser().setCommunicationmodetypecode(uiUser.getExternaluser().getCommunicationmodetypecode());
-		if(uiUser.getExternaluser().getCommunicationmodetypename() != null && uiUser.getExternaluser().getCommunicationmodetypename() != "") user.getExternaluser().setCommunicationmodetypename(uiUser.getExternaluser().getCommunicationmodetypename());
-		if(uiUser.getExternaluser().getSubscribenotifications() != null && uiUser.getExternaluser().getSubscribenotifications() != "") user.getExternaluser().setSubscribenotifications(uiUser.getExternaluser().getSubscribenotifications());
-		if(uiUser.getExternaluser().getSubscribeevents() != null && uiUser.getExternaluser().getSubscribeevents() != "") user.getExternaluser().setSubscribeevents(uiUser.getExternaluser().getSubscribeevents());
-		if(uiUser.getExternaluser().getSubscribenews() != null && uiUser.getExternaluser().getSubscribenews() != "") user.getExternaluser().setSubscribenews(uiUser.getExternaluser().getSubscribenews());
 		return user;
 	}//getPopulatedUserWithModifiedDetails
 

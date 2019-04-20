@@ -20,6 +20,7 @@ import com.dw.ngms.cis.uam.dto.UserDTO;
 import com.dw.ngms.cis.uam.entity.Task;
 import com.dw.ngms.cis.uam.entity.User;
 import com.dw.ngms.cis.uam.enums.ApprovalStatus;
+import com.dw.ngms.cis.uam.enums.Status;
 import com.dw.ngms.cis.uam.service.TaskService;
 import com.dw.ngms.cis.uam.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,9 @@ public class InternalUserRoleController extends MessageController {
             internalUserRoles.setSectionName(internalUserRoleDTO.getSectionName());
             internalUserRoles.setRoleCode(internalUserRoleDTO.getRoleCode());
             internalUserRoles.setRoleName(internalUserRoleDTO.getRoleName());
+            internalUserRoles.setIsActive(internalUserRoleDTO.getIsActive());
             internalUserRoles.setCreateddate(new Date());
+
             if(!StringUtils.isEmpty(internalUserRoles.getProvinceCode()) && !StringUtils.isEmpty(internalUserRoles.getSectionCode())) {
                  internalRole = this.internalUserService.createInternalRoleCode(internalUserRoles.getProvinceCode(), internalUserRoles.getSectionCode(), internalUserRoles.getRoleCode());
             }
@@ -98,15 +101,6 @@ public class InternalUserRoleController extends MessageController {
             }
             internalUserRoles.setInternalRoleCode(internalRole.getInternalRoleCode());
             InternalUserRoles savedResponse = internalUserService.saveInternalUserRole(internalUserRoles);
-            task.setTaskType("INTERNAL_USER_PENDING_APPROVAL");
-            task.setTaskReferenceCode(internalUserRoleDTO.getUserCode());
-            task.setTaskReferenceType("INTERNAL USER");
-            task.setTaskOpenDesc("Internal User Description");
-            task.setTaskAllProvinceCode(internalUserRoleDTO.getProvinceCode());
-            task.setTaskAllOCSectionCode(internalUserRoleDTO.getSectionCode());
-            task.setTaskAllOCRoleCode(internalUserRoleDTO.getRoleCode());
-            task.setTaskStatus("Open");
-
             //createTask(task);
             //taskController.createTask(request, task);
 
@@ -118,7 +112,7 @@ public class InternalUserRoleController extends MessageController {
 
 
             if (!isEmpty(user) && user != null) {
-                user.setIsApproved(ApprovalStatus.PENDING);
+               // user.setIsApproved(ApprovalStatus.PENDING);
                 this.userService.saveInternalUser(user);
             }
             return ResponseEntity.status(HttpStatus.OK).body(savedResponse);
@@ -130,6 +124,23 @@ public class InternalUserRoleController extends MessageController {
     }//createInternalUserRole
 
 
+
+    @RequestMapping(value = "/deactivateUserRole", method = RequestMethod.POST)
+    public ResponseEntity<?> deactivateUserRole(HttpServletRequest request, @RequestBody @Valid InternalUserRoleDTO internalUserRoleDTO) throws IOException {
+        try {
+            InternalUserRoles internalUserRoles = this.internalUserService.findByUserByNameAndCode(internalUserRoleDTO.getUserCode(), internalUserRoleDTO.getUserName(),internalUserRoleDTO.getInternalRoleCode());
+            if (isEmpty(internalUserRoles)) {
+                return generateEmptyResponse(request, "Internal User Roles not found");
+            }
+            if (!isEmpty(internalUserRoles)) {
+                internalUserRoles.setIsActive(internalUserRoleDTO.getIsActive());
+            }
+            this.internalUserService.saveInternalUserRole(internalUserRoles);
+            return ResponseEntity.status(HttpStatus.OK).body("Internal Roles DeActivated Successfully");
+        } catch (Exception exception) {
+            return generateFailureResponse(request, exception);
+        }
+    }//deactivateUser
 
     @PostMapping("/uploadSignedUserAccess")
     public ResponseEntity<?> handleFileUpload(HttpServletRequest request, @RequestParam("file") MultipartFile file,

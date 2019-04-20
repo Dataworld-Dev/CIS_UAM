@@ -1,6 +1,8 @@
 package com.dw.ngms.cis.uam.report;
 
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -49,12 +51,22 @@ public class ReportGenerator {
 	
 	private JasperPrint fillReport(JasperReport jasperReport, Map<String, Object> parameters) {
 		if(jasperReport == null || CollectionUtils.isEmpty(parameters)) return null;
-		
+		JasperPrint jasperPrint = null;		
+		Connection con = null;
 		try {
-			return JasperFillManager.fillReport(jasperReport, parameters, dataSource.getConnection());
+			con = dataSource.getConnection();
+			jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, con);
 		} catch (Exception ex) {
 			log.error("Error while filling the report {}", ex.getMessage());
+		} finally {
+			try {
+				if(con != null && !con.isClosed()) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				log.error("Failed to close the connection, {}", e.getMessage());
+			}
 		}
-		return null;
+		return jasperPrint;
 	}//fillReport
 }

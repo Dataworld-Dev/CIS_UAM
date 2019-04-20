@@ -1,5 +1,7 @@
 package com.dw.ngms.cis.uam.controller;
 
+import com.dw.ngms.cis.exception.ExceptionConstants;
+import com.dw.ngms.cis.uam.dto.MailDTO;
 import com.dw.ngms.cis.uam.entity.IssueLog;
 import com.dw.ngms.cis.uam.entity.User;
 import com.dw.ngms.cis.uam.jsonresponse.UserControllerResponse;
@@ -79,17 +81,53 @@ public class IssueLogController extends MessageController {
 
 
     @RequestMapping(value = "/issueLogUpdateStatus", method = RequestMethod.POST)
-    public ResponseEntity updateStatus(HttpServletRequest request,@RequestParam Long issueID, @Valid @RequestBody IssueLog issueLogDetails) {
+    public ResponseEntity updateStatus(HttpServletRequest request,@RequestParam Long issueID, @Valid @RequestBody IssueLog issueLogDetails) throws IOException {
 
         IssueLog issueLog = issueLogService.findById(issueID);
         if (!StringUtils.isEmpty(issueLog)) {
             issueLog.setIssueStatus(issueLogDetails.getIssueStatus());
             IssueLog updateIssueLog = this.issueLogService.saveIssueLog(issueLog);
+            MailDTO mailDTO = getMailDTO(updateIssueLog);
+            sendMailToUser(updateIssueLog, mailDTO);
             return ResponseEntity.status(HttpStatus.OK).body(updateIssueLog);
         }else{
             return generateEmptyWithOKResponse(request, "No Issue log found");
         }
 
+    }
+
+
+    private MailDTO getMailDTO(@RequestBody @Valid IssueLog issueLog) {
+        MailDTO mailDTO = new MailDTO();
+        mailDTO.setHeader(ExceptionConstants.header);
+        mailDTO.setFooter(ExceptionConstants.footer);
+
+        mailDTO.setSubject("Issue Log Registered");
+        return mailDTO;
+    }
+
+
+    private void sendMailToUser(@RequestBody @Valid IssueLog issueLog, MailDTO mailDTO) throws IOException {
+
+        if (issueLog.getIssueStatus().equalsIgnoreCase("OPEN")) {
+            mailDTO.setBody1("Your issue is open.");
+            mailDTO.setBody2("");
+            mailDTO.setBody3("");
+            mailDTO.setBody4("");
+        } else  if (issueLog.getIssueStatus().equalsIgnoreCase("CLOSE"))  {
+            mailDTO.setBody1("Your issue is closed.");
+            mailDTO.setBody2("");
+            mailDTO.setBody3("");
+            mailDTO.setBody4("");
+        }
+
+        String mailResponse;
+        mailDTO.setSubject("Welcome to CIS");
+        mailDTO.setHeader(ExceptionConstants.header + " " + issueLog.getFullName() + ",");
+        mailDTO.setFooter("CIS ADMIN");
+        mailDTO.setToAddress(issueLog.getEmail());
+        mailResponse = sendMail(mailDTO);
+        System.out.println("mailResponse is "+mailResponse);
     }
 
 

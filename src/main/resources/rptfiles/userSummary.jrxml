@@ -94,11 +94,11 @@
 		<parameter name="tSector" class="java.lang.String"/>
 		<queryString language="SQL">
 			<![CDATA[SELECT * FROM "V_USERDETAILS" WHERE CREATEDDATE >= $P{tFromDate} AND CREATEDDATE <= $P{tToDate} AND
-(PROVINCE = NVL( $P{tProvince},  PROVINCE) OR PROVINCE is null) AND 
-(SECTION = NVL( $P{tSection},  SECTION) OR SECTION is null) AND 
-(SECTOR = NVL( $P{tSector},  SECTOR) OR SECTOR is null) AND 
-(ORGANIZATION =NVL( $P{tOrganisation},  ORGANIZATION) OR ORGANIZATION is null) AND 
-USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
+(PROVINCE = NVL($P{tProvince},  PROVINCE) OR PROVINCE is null) AND 
+(SECTION = NVL($P{tSection},  SECTION) OR SECTION is null) AND 
+(SECTOR = NVL($P{tSector},  SECTOR) OR SECTOR is null) AND 
+(ORGANIZATION =NVL($P{tOrganisation},  ORGANIZATION) OR ORGANIZATION is null) AND 
+USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 		</queryString>
 		<field name="CREATEDDATE" class="java.sql.Timestamp">
 			<property name="com.jaspersoft.studio.field.label" value="CREATEDDATE"/>
@@ -138,10 +138,10 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 	<parameter name="toDate" class="java.util.Date"/>
 	<parameter name="province" class="java.lang.String"/>
 	<parameter name="section" class="java.lang.String"/>
-	<parameter name="sector" class="java.lang.String"/>
 	<parameter name="userType" class="java.lang.String"/>
 	<parameter name="organisation" class="java.lang.String"/>
 	<parameter name="resourcePath" class="java.lang.String"/>
+	<parameter name="sector" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT * FROM V_USERDETAILS]]>
 	</queryString>
@@ -209,17 +209,13 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 				<imageExpression><![CDATA[$P{resourcePath}+"/images/Logo_DRDLR.jpg"]]></imageExpression>
 			</image>
 			<image>
-				<reportElement x="580" y="0" width="164" height="33" uuid="db35de88-1c38-4301-adf6-7c9d943f0c81"/>
-				<imageExpression><![CDATA[$P{resourcePath}+"/images/Logo_App.jpg"]]></imageExpression>
-			</image>
-			<image>
 				<reportElement x="990" y="-2" width="100" height="56" uuid="8b8602a0-1bb7-4ac2-b968-174a97ae0c0c"/>
 				<imageExpression><![CDATA[$P{resourcePath}+"/images/Logo_Flag.jpg"]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="430" y="73" width="160" height="30" uuid="663a13d7-46e6-4962-a0bd-3640c6e6afba"/>
-				<textElement textAlignment="Center">
-					<font isBold="true"/>
+				<reportElement x="460" y="10" width="300" height="30" uuid="663a13d7-46e6-4962-a0bd-3640c6e6afba"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["User Summary Details Report"]]></textFieldExpression>
 			</textField>
@@ -266,7 +262,7 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 					<property name="com.jaspersoft.studio.components.autoresize.next" value="true"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="UserSummaryDataset" uuid="6ee7db5d-1409-45a5-8101-eb7a815f1411">
+					<datasetRun subDataset="UserSummaryDataset" uuid="5f5f8892-95e1-4b68-8636-41aadf2ac483">
 						<datasetParameter name="tFromDate">
 							<datasetParameterExpression><![CDATA[$P{fromDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -285,13 +281,16 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<datasetParameter name="tUserType">
 							<datasetParameterExpression><![CDATA[$P{userType}]]></datasetParameterExpression>
 						</datasetParameter>
+						<datasetParameter name="tSector">
+							<datasetParameterExpression><![CDATA[$P{sector}]]></datasetParameterExpression>
+						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="106" uuid="3fe6cc06-9b2f-416a-a518-fb714940a3d2">
+					<jr:column width="116" uuid="3fe6cc06-9b2f-416a-a518-fb714940a3d2">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement key="" mode="Transparent" x="0" y="0" width="106" height="30" uuid="8d0b6c0f-71ae-4c36-9a9d-0e72306343a7"/>
+								<reportElement key="" mode="Transparent" x="0" y="0" width="116" height="30" uuid="8d0b6c0f-71ae-4c36-9a9d-0e72306343a7"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -301,17 +300,17 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="106" height="30" uuid="d1af3422-25c5-4db5-b7f2-83136d09ec02"/>
+								<reportElement x="0" y="0" width="116" height="30" uuid="d1af3422-25c5-4db5-b7f2-83136d09ec02"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{CREATEDDATE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{CREATEDDATE} == null ? "" : $F{CREATEDDATE}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="114" uuid="9d25c59b-1e9f-4b17-907b-cfd27f829ba4">
+					<jr:column width="121" uuid="9d25c59b-1e9f-4b17-907b-cfd27f829ba4">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="114" height="30" uuid="f85a8f05-918c-4e28-afa5-c5367b1ff95e"/>
+								<reportElement mode="Transparent" x="0" y="0" width="121" height="30" uuid="f85a8f05-918c-4e28-afa5-c5367b1ff95e"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -321,17 +320,17 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="114" height="30" uuid="3870bdff-5a60-4c27-8289-12ddb839bb5f"/>
+								<reportElement x="0" y="0" width="121" height="30" uuid="3870bdff-5a60-4c27-8289-12ddb839bb5f"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{FULLNAME}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{FULLNAME} == null ? "" : $F{FULLNAME}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="94" uuid="8357bb6d-8f8b-426a-9e46-aa096150ab21">
+					<jr:column width="111" uuid="8357bb6d-8f8b-426a-9e46-aa096150ab21">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="94" height="30" uuid="56b10e03-2a75-4533-b211-c098210c3c3c"/>
+								<reportElement mode="Transparent" x="0" y="0" width="111" height="30" uuid="56b10e03-2a75-4533-b211-c098210c3c3c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -341,17 +340,17 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="94" height="30" uuid="ec17ea32-a1e0-43ec-a12a-9961f8766b57"/>
+								<reportElement x="0" y="0" width="111" height="30" uuid="ec17ea32-a1e0-43ec-a12a-9961f8766b57"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{USERTYPE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{USERTYPE} == null ? "" : $F{USERTYPE}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="131" uuid="fd5e9a60-f7d5-4a42-8014-2848b2f60cc9">
+					<jr:column width="130" uuid="fd5e9a60-f7d5-4a42-8014-2848b2f60cc9">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="131" height="30" uuid="393c2d38-7c30-4e20-b764-8ace6a981f2f"/>
+								<reportElement mode="Transparent" x="0" y="0" width="130" height="30" uuid="393c2d38-7c30-4e20-b764-8ace6a981f2f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -361,17 +360,17 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="131" height="30" uuid="fd1588fe-8eaa-4e2a-a1f0-91d26aff800c"/>
+								<reportElement x="0" y="0" width="130" height="30" uuid="fd1588fe-8eaa-4e2a-a1f0-91d26aff800c"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{ORGANIZATION}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{ORGANIZATION} == null ? "" : $F{ORGANIZATION}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="101" uuid="0034c475-2359-4a8b-a9d9-7ae055483233">
+					<jr:column width="113" uuid="0034c475-2359-4a8b-a9d9-7ae055483233">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="101" height="30" uuid="f7f1e15b-d2b8-4d6a-b904-5157ee2ad16c"/>
+								<reportElement mode="Transparent" x="0" y="0" width="113" height="30" uuid="f7f1e15b-d2b8-4d6a-b904-5157ee2ad16c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -381,17 +380,17 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="101" height="30" uuid="351d970e-0369-40e2-818c-15dc9c4e500c"/>
+								<reportElement x="0" y="0" width="113" height="30" uuid="351d970e-0369-40e2-818c-15dc9c4e500c"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{SECTOR}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{SECTOR} == null ? "" : $F{SECTOR}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="79" uuid="8b2b4cae-70d8-443b-aee8-a5daddf54c6b">
+					<jr:column width="143" uuid="8b2b4cae-70d8-443b-aee8-a5daddf54c6b">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="79" height="30" uuid="de0dd6ff-67ac-4020-9aa5-bd1d3c62224e"/>
+								<reportElement mode="Transparent" x="0" y="0" width="143" height="30" uuid="de0dd6ff-67ac-4020-9aa5-bd1d3c62224e"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -401,17 +400,17 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="79" height="30" uuid="d9a091ee-257b-41ad-be4f-209e5cf3052d"/>
+								<reportElement x="0" y="0" width="143" height="30" uuid="d9a091ee-257b-41ad-be4f-209e5cf3052d"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{ROLE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{ROLE} == null ? "" : $F{ROLE}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="112" uuid="c98289e3-d348-460d-a1be-b93e2ac16522">
+					<jr:column width="86" uuid="c98289e3-d348-460d-a1be-b93e2ac16522">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="112" height="30" uuid="374e8192-183e-4ba4-831c-00c40ad393fc"/>
+								<reportElement mode="Transparent" x="0" y="0" width="86" height="30" uuid="374e8192-183e-4ba4-831c-00c40ad393fc"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -421,17 +420,17 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="112" height="30" uuid="f252451c-1d01-412d-b72a-8a21f6e01b73"/>
+								<reportElement x="0" y="0" width="86" height="30" uuid="f252451c-1d01-412d-b72a-8a21f6e01b73"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{PROVINCE}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{PROVINCE} == null ? "(All)" : $F{PROVINCE}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="170" uuid="a168b9c9-ab6a-468c-827b-3fe53ac44771">
+					<jr:column width="151" uuid="a168b9c9-ab6a-468c-827b-3fe53ac44771">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="170" height="30" uuid="6560a0f6-156f-44f8-8d05-87701758a827"/>
+								<reportElement mode="Transparent" x="0" y="0" width="151" height="30" uuid="6560a0f6-156f-44f8-8d05-87701758a827"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -441,17 +440,17 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="170" height="30" uuid="27e3b1ca-8fba-45c4-892a-2385f01141dc"/>
+								<reportElement x="0" y="0" width="151" height="30" uuid="27e3b1ca-8fba-45c4-892a-2385f01141dc"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{EMAIL}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{EMAIL} == null ? "" : $F{EMAIL}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="78" uuid="c132d0cb-ad51-42fe-996b-1a8ecd5e23e7">
+					<jr:column width="100" uuid="c132d0cb-ad51-42fe-996b-1a8ecd5e23e7">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="78" height="30" uuid="e51804ab-07a6-4045-ab60-c4f0c5098e8f"/>
+								<reportElement mode="Transparent" x="0" y="0" width="100" height="30" uuid="e51804ab-07a6-4045-ab60-c4f0c5098e8f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -461,37 +460,17 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="78" height="30" uuid="911f4770-3127-4ec4-8085-d223c8c11902"/>
+								<reportElement x="0" y="0" width="100" height="30" uuid="911f4770-3127-4ec4-8085-d223c8c11902"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{STATUS}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{STATUS} == null ? "" : $F{STATUS}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="98" uuid="8d4a4262-55bb-491e-9edd-e89cb7b5aeab">
+					<jr:column width="110" uuid="e6726bba-7898-4291-a87d-bdb13d26cbb1">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="98" height="30" uuid="936f71c3-4299-4a7a-af3a-0247617cb75c"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="11" isBold="true"/>
-								</textElement>
-								<text><![CDATA[Additional Roles]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
-						<jr:detailCell style="Table 1_TD" height="30">
-							<textField>
-								<reportElement x="0" y="0" width="98" height="30" uuid="c1b7fa14-8254-412b-9373-b8b12b4051cb"/>
-								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{ADDITIONALROLES}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="98" uuid="e6726bba-7898-4291-a87d-bdb13d26cbb1">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
-						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement mode="Transparent" x="0" y="0" width="98" height="30" uuid="2f9049d9-1fde-404f-999f-5b17bcf84a87"/>
+								<reportElement mode="Transparent" x="0" y="0" width="110" height="30" uuid="2f9049d9-1fde-404f-999f-5b17bcf84a87"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="11" isBold="true"/>
 								</textElement>
@@ -501,9 +480,9 @@ USERTYPE = NVL( $P{tUserType},  USERTYPE)]]>
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="98" height="30" uuid="9242f4d2-f125-4518-a575-ae1f0c4f1516"/>
+								<reportElement x="0" y="0" width="110" height="30" uuid="9242f4d2-f125-4518-a575-ae1f0c4f1516"/>
 								<textElement verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{SECTION}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{SECTION} == null ? "" : $F{SECTION}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

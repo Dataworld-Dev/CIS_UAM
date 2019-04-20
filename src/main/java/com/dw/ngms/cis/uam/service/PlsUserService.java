@@ -1,5 +1,8 @@
 package com.dw.ngms.cis.uam.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -60,7 +63,39 @@ public class PlsUserService {
 		if(user == null)
 			throw new RuntimeException("PlsUser is not registered with code "+plsuser.getPlscode()+" and email: "+plsuser.getEmail());
 	
-        return this.plsUserRepository.save(plsuser);
+        return this.plsUserRepository.save(populatePlsUser(plsuser, user));
 	}//updatePlsUser
     	
+	private PlsUser populatePlsUser(PlsUser uiplsuser, PlsUser dbplsuser) {
+		dbplsuser.setCellphoneno(uiplsuser.getCellphoneno());
+		dbplsuser.setCourierservice(uiplsuser.getCourierservice());
+		dbplsuser.setDescription(uiplsuser.getDescription());
+		dbplsuser.setFaxno(uiplsuser.getFaxno());
+		dbplsuser.setGeneralnotes(uiplsuser.getGeneralnotes());
+		dbplsuser.setInitials(uiplsuser.getInitials());
+		dbplsuser.setIsActive(uiplsuser.getIsActive());
+		dbplsuser.setIsValid(uiplsuser.getIsValid());
+		dbplsuser.setModifieddate(getFormattedDate());
+		dbplsuser.setModifieduser(uiplsuser.getModifieduser());
+		dbplsuser.setPostaladdress1(uiplsuser.getPostaladdress1());
+		dbplsuser.setPostaladdress2(uiplsuser.getPostaladdress2());
+		dbplsuser.setPostaladdress3(uiplsuser.getPostaladdress3());
+		dbplsuser.setPostaladdress4(uiplsuser.getPostaladdress4());
+		dbplsuser.setPostalcode(uiplsuser.getPostalcode());
+		dbplsuser.setProvcode(uiplsuser.getProvcode());
+		dbplsuser.setRestictedind(uiplsuser.getRestictedind());
+		dbplsuser.setSectionalplanind(uiplsuser.getSectionalplanind());
+		dbplsuser.setSgofficeid(uiplsuser.getSgofficeid());
+		dbplsuser.setSurname(uiplsuser.getSurname());
+		dbplsuser.setSurveyorid(uiplsuser.getSurveyorid());
+		dbplsuser.setTelephoneno(uiplsuser.getTelephoneno());
+		
+		return dbplsuser;
+	}//populatePlsUser
+	
+	private String getFormattedDate() {
+		DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+		return dateFormat.format(new Date());  
+	}//getFormattedDate
+	
 }

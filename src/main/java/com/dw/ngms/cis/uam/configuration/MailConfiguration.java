@@ -17,14 +17,14 @@ public class MailConfiguration {
 
     private String sendBlueMailLinkURL;
     private String sendBlueMailPassword;
+    private String adminUserMail;
+    private String provinceAdminMail;
 
 
     @Profile("dev")
     @Bean
     public String devDatabaseConnection() {
         System.out.println("Connection for UAM_DEV");
-        System.out.println(sendBlueMailLinkURL);
-        System.out.println(sendBlueMailPassword);
         return "DB connection for DEV Environment";
     }
 
@@ -32,8 +32,6 @@ public class MailConfiguration {
     @Bean
     public String testDatabaseConnection() {
         System.out.println("Connection to UAM_PRE");
-        System.out.println(sendBlueMailLinkURL);
-        System.out.println(sendBlueMailPassword);
         return "DB Connection to PRE Environment";
     }
 
@@ -41,8 +39,6 @@ public class MailConfiguration {
     @Bean
     public String prodDatabaseConnection() {
         System.out.println("Connection to UAM_PROD");
-        System.out.println(sendBlueMailLinkURL);
-        System.out.println(sendBlueMailPassword);
         return "DB Connection to PROD Environment";
     }
 }

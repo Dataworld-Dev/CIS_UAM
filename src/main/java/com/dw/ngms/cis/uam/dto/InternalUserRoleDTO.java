@@ -30,5 +30,6 @@ public class InternalUserRoleDTO implements Serializable {
     private String roleCode;
     private String roleName;
     private String internalRoleCode;
+    private String isActive;
     
 }
