@@ -147,6 +147,8 @@ public class Requests implements Serializable {
     @Column(name = "EXTERNALUSERDISPATCHDOCS", length = 200)
     private String externalUserDispatchDocs;
 
+    @Transient
+    private String currentStatus;
 
 
     @Column(name = "ISACTIVE", length = 200)

@@ -131,8 +131,8 @@ public class RequestItemController extends MessageController {
     }//createRequestItem
 
 
-    @PostMapping("/getRequestItemsFilesSendEmail")
-    public ResponseEntity<?> getRequestItemsFilesSendEmail(HttpServletRequest request,
+    @PostMapping("/getRequestItemsFilesSendFTP")
+    public ResponseEntity<?> getRequestItemsFilesSendFTP(HttpServletRequest request,
                                                            @RequestBody RequestItems requestItems
     ) {
         String message = "";
@@ -237,6 +237,124 @@ public class RequestItemController extends MessageController {
             return generateFailureResponse(request, exception);
         }
         return ResponseEntity.status(HttpStatus.OK).body("Sent email Sucessfully");
+    }
+
+
+
+    @PostMapping("/getRequestItemsFilesSendEmail")
+    public ResponseEntity<?> getRequestItemsFilesSendEmail(HttpServletRequest request,
+                                                           @RequestBody RequestItems requestItems
+    ) {
+        String message = "";
+        String json = null;
+        Gson gson = new Gson();
+        UserControllerResponse userControllerResponse = new UserControllerResponse();
+        FTPClient ftpClient = new FTPClient();
+        String str = null;
+        List<String> filesExist = new ArrayList<>();
+        try {
+            List<RequestItems> requestItemsList = requestItemService.getRequestsByRequestCode(requestItems.getRequestCode());
+            System.out.println("size is "+requestItemsList.size());
+            if (requestItemsList.size()>0) {
+                for (RequestItems items : requestItemsList) {
+                    String fileName = null;
+
+                    if (items.getFtpSiteUrl() != null && !items.getFtpSiteUrl().isEmpty()) {
+                        int index = items.getFtpSiteUrl().lastIndexOf("/");
+                        fileName = items.getFtpSiteUrl().substring(index + 1);
+                        System.out.println("File Name is " + fileName);
+                    }
+
+                    if (items.getFtpSiteUrl() != null && !items.getFtpSiteUrl().isEmpty()) {
+                        System.out.println("items url is " + items.getFtpSiteUrl());
+                        InputStream inputStream = new URL(items.getFtpSiteUrl()).openStream();
+                        Files.copy(inputStream, Paths.get(applicationPropertiesConfiguration.getRequestDirectoryLocalPath() + fileName), StandardCopyOption.REPLACE_EXISTING);
+                        System.out.println("items open");
+
+                        filesExist.add(applicationPropertiesConfiguration.getRequestDirectoryLocalPath() + fileName);
+                        userControllerResponse.setFiles(filesExist);
+                        json = gson.toJson(userControllerResponse);
+                        items.setFtpSiteUrlJson(json);
+
+                        str = items.getFtpSiteUrlJson();
+
+                        //System.out.println("Items are "+new Gson().toJson(items.getFtpSiteUrlJson()));
+                    }
+                }
+
+                String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+
+                if (str != null && !str.isEmpty()) {
+                    String pathFromDB = str;
+                    System.out.println("str is " + str);
+                    FilePathsDTO filePath = gson.fromJson(pathFromDB, FilePathsDTO.class);
+                    System.out.println("filePath is " + filePath.getFiles().toString());
+                    List<String> files = new ArrayList<String>();
+                    for (String str1 : filePath.getFiles()) {
+                        System.out.println(str1);
+                        files.add(str1);
+                        ftpZipFiles(files, ftpClient, timeStamp);
+                    }
+
+
+                    String zipFilename = "RequestItemsFtpFilesDownload" + "_" + timeStamp + ".zip";
+                    File firstLocalFile = new File(applicationPropertiesConfiguration.getRequestDirectoryFtpPath() + zipFilename);
+
+                    MailDTO mailDTO = new MailDTO();
+                    ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+                    emailExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                sendMailWithAttachment(requestItems, mailDTO,zipFilename, firstLocalFile);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                    emailExecutor.shutdown(); // it is very important to shutdown your non-singleton ExecutorService.
+                }else{
+                    return generateEmptyResponse(request, "RequestItems files are  not found");
+                }
+            }else{
+                return generateEmptyResponse(request, "RequestItems files are  not found");
+            }
+
+
+        } catch (Exception exception) {
+            return generateFailureResponse(request, exception);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Sent email Successfully");
+    }
+
+
+
+    private void sendMailWithAttachment(RequestItems requestItems, MailDTO mailDTO, String fileName, File file) throws Exception {
+        String firstName = null;
+        String lastName = null;
+        Map<String, Object> model = new HashMap<String, Object>();
+        Requests requests = this.requestsService.getRequestsByRequestCode(requestItems.getRequestCode());
+        if (requests.getUserCode() != null) {
+            User user = this.userService.findByUserCode(requests.getUserCode());
+            firstName = user.getFirstName();
+            lastName = user.getSurname();
+        }
+        model.put("firstName", firstName + " " + lastName);
+        model.put("body1", "Request Attached");
+        model.put("body2", "");
+        model.put("body3", "");
+        model.put("body4", "");
+
+        mailDTO.setMailSubject("DRDLR:Delivery");
+        model.put("FOOTER", "CIS ADMIN");
+        mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
+        mailDTO.setMailTo(requests.getUserName());
+        mailDTO.setModel(model);
+
+        sendEmail(mailDTO, fileName, file);
+        //sendEmail(mailDTO);
+
     }
 
 

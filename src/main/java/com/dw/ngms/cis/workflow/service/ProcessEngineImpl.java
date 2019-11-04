@@ -58,6 +58,7 @@ public class ProcessEngineImpl implements ProcessEngine<Task>{
 	private InternalRoleService internalRoleService;	
 	
 	@Override
+	//add mail
 	public void startProcess(String processId, Task task, ProcessAdditionalInfo additionalInfo) {		
 		Process process = getProcessById(processId);
 		if(process == null) {
@@ -99,6 +100,7 @@ public class ProcessEngineImpl implements ProcessEngine<Task>{
 	}//getStartProcessTargetSequenceId
 
 	@Override
+	//add mail
 	public Target processUserState(Task task, ProcessAdditionalInfo additionalInfo) {
 		if(task == null || additionalInfo == null) {
 			log.error("Task details required to process");
@@ -129,6 +131,7 @@ public class ProcessEngineImpl implements ProcessEngine<Task>{
 	}//processUserState
 
 	@Override
+	//add mail
 	public void endProcess(Process process, Task task, ProcessAdditionalInfo additionalInfo) {
 		if(process == null) {
 			log.error("process not found");

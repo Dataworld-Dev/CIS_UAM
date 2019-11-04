@@ -88,9 +88,6 @@ public class RequestItems implements Serializable {
     private String ftpSiteUrlJson;
 
 
-    @Transient
-    private String currentStatus;
-
 
     /*@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name="REQUESTID", nullable=false)

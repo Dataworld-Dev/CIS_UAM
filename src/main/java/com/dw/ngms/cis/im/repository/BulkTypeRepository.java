@@ -22,7 +22,7 @@ public interface BulkTypeRepository extends JpaRepository<BulkTypes, UUID> {
     Long getBulkTypeId();
 
 
-    @Query("SELECT u FROM BulkTypes u WHERE u.isActive = 'Y'")
+    @Query("SELECT u FROM BulkTypes u WHERE u.isActive = 'Y' order by u.bulkTypeName")
     List<BulkTypes> findActiveBulkTypes();
 
     @Query("SELECT u FROM CostCategories u WHERE u.categoryCode = :categoryCode")

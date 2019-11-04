@@ -180,6 +180,7 @@ public class RequestController extends MessageController {
                             System.out.println("Internal user roles" + in.getGazetteType1());
                             RequestItems requestItems1 = getRequestItems(in);
                             requestItemsList.add(requestItems1);
+                            req.setCurrentStatus(taskService.getTaskCurrentStatus(in.getRequestCode()) == "Closed"? "Closed" : "Open");
                             req.setRequestItems(requestItemsList);
 
                         }
@@ -197,6 +198,7 @@ public class RequestController extends MessageController {
                             System.out.println("Internal user roles" + in.getGazetteType1());
                             RequestItems requestItems1 = getRequestItems(in);
                             requestItemsList.add(requestItems1);
+                            req.setCurrentStatus(taskService.getTaskCurrentStatus(in.getRequestCode()) == "Closed"? "Closed" : "Open");
                             req.setRequestItems(requestItemsList);
 
                         }
@@ -225,7 +227,7 @@ public class RequestController extends MessageController {
         requestItems1.setGazetteType1(in.getGazetteType1());
         requestItems1.setGazetteType2(in.getGazetteType2());
         requestItems1.setResultJson(in.getResultJson());
-        requestItems1.setCurrentStatus(taskService.getTaskCurrentStatus(in.getRequestCode()));
+
         return requestItems1;
     }
 
@@ -601,6 +603,34 @@ public class RequestController extends MessageController {
 
     }
 
+
+    private void sendMailWithAttachment(Requests requests, MailDTO mailDTO, String fileName, File file) throws Exception {
+        String firstName = null;
+        String lastName = null;
+        Map<String, Object> model = new HashMap<String, Object>();
+        if (requests.getUserCode() != null) {
+            User user = this.userService.findByUserCode(requests.getUserCode());
+            firstName = user.getFirstName();
+            lastName = user.getSurname();
+        }
+        model.put("firstName", firstName + " " + lastName);
+        model.put("body1", "Request Attached");
+        model.put("body2", "");
+        model.put("body3", "");
+        model.put("body4", "");
+
+        mailDTO.setMailSubject("DRDLR:Delivery");
+        model.put("FOOTER", "CIS ADMIN");
+        mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
+        mailDTO.setMailTo(requests.getUserName());
+        mailDTO.setModel(model);
+
+        sendEmail(mailDTO, fileName, file);
+        //sendEmail(mailDTO);
+
+    }
+
+
     private void sendMaiForCollectionReady(Requests requests, MailDTO mailDTO) throws Exception {
         String firstName = null;
         String lastName = null;
@@ -824,6 +854,14 @@ public class RequestController extends MessageController {
 
     }*/
 
+
+
+
+
+
+
+
+
     @PostMapping("/dispatchDocumentSendMail")
     public ResponseEntity<?> dispatchDocumentSendMail(HttpServletRequest request,
                                                       @RequestBody Requests requestsParam
@@ -837,8 +875,6 @@ public class RequestController extends MessageController {
             Requests requests = this.requestService.getRequestsByRequestCode(requestsParam.getRequestCode());
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
             if (requests.getFormatType().equalsIgnoreCase("Electronic(Email)")) {
-
-            }  else if (requests.getFormatType().equalsIgnoreCase("Electronic(FTP)")) {
                 if (requests != null && !isEmpty(requests)) {
                     if (requests.getDispatchDocs() != null) {
                         String pathFromDB = requests.getDispatchDocs();
@@ -850,57 +886,16 @@ public class RequestController extends MessageController {
                             files.add(str1);
                             ftpZipFiles(files, timeStamp);
                         }
-
-
                         String zipFilename = "FTPFilesDownload" + "_" + timeStamp + ".zip";
-
-                        //String zipFilename = "FTPFilesDownload.zip";
-
-                        boolean loginExists = ftpLogin(ftpClient);
-                        try {
-                            if (loginExists) {
-                                ftpClient.enterLocalPassiveMode();
-                                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-                                ftpClient.changeWorkingDirectory("/ftpFileDownload/");
-                                File firstLocalFile = new File(applicationPropertiesConfiguration.getUploadDirectoryPathFTP() + zipFilename);
-                                System.out.println("Local File is: " + applicationPropertiesConfiguration.getUploadDirectoryPathFTP());
-                                System.out.println("zipFilename is: " + zipFilename);
-                                String firstRemoteFile = zipFilename;
-                                InputStream inputStream = new FileInputStream(firstLocalFile);
-                                System.out.println("Start uploading first file");
-                                boolean done = ftpClient.storeFile(firstRemoteFile, inputStream);
-                                if (done) {
-                                    System.out.println("Done");
-                                } else {
-                                    System.out.println("Not Done");
-                                }
-                                inputStream.close();
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Exception is" + e.getMessage());
-                            ;
-                            e.printStackTrace();
-                        }
-                        ftpClient.logout();
-                        System.out.println("Start uploading second");
-                        String path = appPropertiesService.getProperty("FTP_UPLOAD_PATH").getKeyValue();
-                        String server = "ftp://" + appPropertiesService.getProperty("FTP_SERVER").getKeyValue();
-
-                        String ftpFilePath = server + path + zipFilename;
-                        System.out.println("File Path is: " + ftpFilePath);
-
-                        System.out.println("FTP Server is: " + appPropertiesService.getProperty("FTP_SERVER").getKeyValue());
-                        System.out.println("FTP userName: " + appPropertiesService.getProperty("FTP_USERNAME").getKeyValue());
-                        System.out.println("FTP  Password is: " + appPropertiesService.getProperty("FTP_PASSWORD").getKeyValue());
+                        File firstLocalFile = new File(applicationPropertiesConfiguration.getUploadDirectoryPathFTP() + zipFilename);
                         MailDTO mailDTO = new MailDTO();
 
-                        // inside your getSalesUserData() method
                         ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
                         emailExecutor.execute(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    sendMailWithFTPPAth(requests, mailDTO, ftpFilePath);
+                                    sendMailWithAttachment(requests, mailDTO,zipFilename, firstLocalFile);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -908,34 +903,110 @@ public class RequestController extends MessageController {
                             }
                         });
                         emailExecutor.shutdown(); // it is very important to shutdown your non-singleton ExecutorService.
-                    } else {
-                        return ResponseEntity.status(HttpStatus.OK).body("Dispatch documents are not found");
                     }
+
+                } else {
+                    return ResponseEntity.status(HttpStatus.OK).body("Dispatch documents are not found");
                 }
-            } else {
-                System.out.println("This is manual delivery for collection");
-                MailDTO mailDTO = new MailDTO();
-                ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
-                emailExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            sendMaiForCollectionReady(requests, mailDTO);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-                emailExecutor.shutdown(); // it is very important to shutdown your non-singleton ExecutorService.
-
             }
+                else if (requests.getFormatType().equalsIgnoreCase("Electronic(FTP)")) {
+                    if (requests != null && !isEmpty(requests)) {
+                        if (requests.getDispatchDocs() != null) {
+                            String pathFromDB = requests.getDispatchDocs();
+                            FilePathsDTO filePath = gson.fromJson(pathFromDB, FilePathsDTO.class);
+                            System.out.println("filePath is " + filePath.getFiles().toString());
+                            List<String> files = new ArrayList<String>();
+                            for (String str1 : filePath.getFiles()) {
+                                System.out.println(str1);
+                                files.add(str1);
+                                ftpZipFiles(files, timeStamp);
+                            }
 
-        } catch (Exception exception) {
-            return generateFailureResponse(request, exception);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("Sent email Sucessfully");
-    }//uploadFTPDispatchDocumentSendMail
+
+                            String zipFilename = "FTPFilesDownload" + "_" + timeStamp + ".zip";
+
+                            //String zipFilename = "FTPFilesDownload.zip";
+
+                            boolean loginExists = ftpLogin(ftpClient);
+                            try {
+                                if (loginExists) {
+                                    ftpClient.enterLocalPassiveMode();
+                                    ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                                    ftpClient.changeWorkingDirectory("/ftpFileDownload/");
+                                    File firstLocalFile = new File(applicationPropertiesConfiguration.getUploadDirectoryPathFTP() + zipFilename);
+                                    System.out.println("Local File is: " + applicationPropertiesConfiguration.getUploadDirectoryPathFTP());
+                                    System.out.println("zipFilename is: " + zipFilename);
+                                    String firstRemoteFile = zipFilename;
+                                    InputStream inputStream = new FileInputStream(firstLocalFile);
+                                    System.out.println("Start uploading first file");
+                                    boolean done = ftpClient.storeFile(firstRemoteFile, inputStream);
+                                    if (done) {
+                                        System.out.println("Done");
+                                    } else {
+                                        System.out.println("Not Done");
+                                    }
+                                    inputStream.close();
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Exception is" + e.getMessage());
+                                ;
+                                e.printStackTrace();
+                            }
+                            ftpClient.logout();
+                            System.out.println("Start uploading second");
+                            String path = appPropertiesService.getProperty("FTP_UPLOAD_PATH").getKeyValue();
+                            String server = "ftp://" + appPropertiesService.getProperty("FTP_SERVER").getKeyValue();
+
+                            String ftpFilePath = server + path + zipFilename;
+                            System.out.println("File Path is: " + ftpFilePath);
+
+                            System.out.println("FTP Server is: " + appPropertiesService.getProperty("FTP_SERVER").getKeyValue());
+                            System.out.println("FTP userName: " + appPropertiesService.getProperty("FTP_USERNAME").getKeyValue());
+                            System.out.println("FTP  Password is: " + appPropertiesService.getProperty("FTP_PASSWORD").getKeyValue());
+                            MailDTO mailDTO = new MailDTO();
+
+                            // inside your getSalesUserData() method
+                            ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+                            emailExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        sendMailWithFTPPAth(requests, mailDTO, ftpFilePath);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            });
+                            emailExecutor.shutdown(); // it is very important to shutdown your non-singleton ExecutorService.
+                        } else {
+                            return ResponseEntity.status(HttpStatus.OK).body("Dispatch documents are not found");
+                        }
+                    }
+                } else {
+                    System.out.println("This is manual delivery for collection");
+                    MailDTO mailDTO = new MailDTO();
+                    ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+                    emailExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                sendMaiForCollectionReady(requests, mailDTO);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                    emailExecutor.shutdown(); // it is very important to shutdown your non-singleton ExecutorService.
+
+                }
+
+            }catch(Exception exception){
+                return generateFailureResponse(request, exception);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body("Sent email Sucessfully");
+        }//uploadFTPDispatchDocumentSendMail
 
     private boolean ftpLogin(FTPClient ftpClient) throws IOException {
         String server = appPropertiesService.getProperty("FTP_SERVER").getKeyValue();
@@ -1073,16 +1144,20 @@ public class RequestController extends MessageController {
             Requests requests = this.requestService.getRequestsByRequestCode(requestCode);
             if (!isEmpty(requests)) {
                 String pathFromDB = requests.getDispatchDocs();
-                Gson gson = new Gson();
-                FilePathsDTO filePath = gson.fromJson(pathFromDB, FilePathsDTO.class);
-                System.out.println("filePath is " + filePath.getFiles().toString());
-                List<String> files = new ArrayList<String>();
-                for (String str1 : filePath.getFiles()) {
-                    files.add(str1);
-                    json = gson.toJson(files);
+                if (!isEmpty(pathFromDB)) {
+                    Gson gson = new Gson();
+                    FilePathsDTO filePath = gson.fromJson(pathFromDB, FilePathsDTO.class);
+                    System.out.println("filePath is " + filePath.getFiles().toString());
+                    List<String> files = new ArrayList<String>();
+                    for (String str1 : filePath.getFiles()) {
+                        files.add(str1);
+                        json = gson.toJson(files);
 
+                    }
+                    return ResponseEntity.status(HttpStatus.OK).body(json);
+                }else{
+                    return ResponseEntity.status(HttpStatus.OK).body(test);
                 }
-                return ResponseEntity.status(HttpStatus.OK).body(json);
             } else {
                 return ResponseEntity.status(HttpStatus.OK).body(test);
             }
