@@ -147,12 +147,20 @@ public class TaskController extends MessageController {
         Date formatDateTo = formatter.parse(formatToDate);
 */
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yy HH:mm:ss");
-        Date fromdate = formatter.parse(fromDate+" 00:00:00");
-        System.out.println("test is" +formatter.format(fromdate));
+        Date todate = null;
+        Date fromdate = null;
 
-        Date todate = formatter.parse(toDate+" 23:59:59");
-        System.out.println("todate is" +formatter.format(todate));
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yy HH:mm:ss");
+        if(fromDate!=null) {
+            fromdate = formatter.parse(fromDate+" 00:00:00");
+            System.out.println("test is" +formatter.format(fromdate));
+        }
+
+
+        if(toDate!=null) {
+            todate = formatter.parse(toDate+" 23:59:59");
+            System.out.println("todate is" +formatter.format(todate));
+        }
         List<Task> taskList = this.taskService.findByCriteria(taskStatus,taskType,taskAllProvinceCode,taskAllOCSectionCode,taskAllOCRoleCode,userName,omitTaskStatus,fromdate,todate);
         return taskList;
     }
