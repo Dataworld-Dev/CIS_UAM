@@ -33,22 +33,20 @@ public class InvoiceController extends MessageController {
 	@GetMapping("/getInvoiceAmountDetails")
 	public ResponseEntity<?> getInvoiceAmountStatus(HttpServletRequest request,
 			@RequestParam(required = false) String fromDate, @RequestParam(required = false) String toDate,
-			@RequestParam(required = false) String provienceCode, @RequestParam(required = false) String taskStatus) throws ParseException {
+			@RequestParam(required = false) String provienceCode, @RequestParam(required = false) String taskStatus)
+			throws ParseException {
 
-		Date fromdate = null;//local variable
-		Date todate =null; //local variable
+		Date fromdate = null;
+		Date todate = null; 
 
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yy HH:mm:ss");
-		
-		if(fromDate!=null && fromDate.trim().length()>0) {
-		fromdate = formatter.parse(fromDate + " 00:00:00");
-		System.out.println("test is" + formatter.format(fromdate));
+
+		if (fromDate != null && fromDate.trim().length() > 0) {
+			fromdate = formatter.parse(fromDate + " 00:00:00");
 		}
-		
-		
-		if(toDate!=null && toDate.trim().length()>0) {
-		todate = formatter.parse(toDate + " 23:59:59");
-		System.out.println("todate is" + formatter.format(todate));
+
+		if (toDate != null && toDate.trim().length() > 0) {
+			todate = formatter.parse(toDate + " 23:59:59");
 		}
 
 		if (StringUtils.isEmpty(provienceCode)) {
@@ -56,13 +54,8 @@ public class InvoiceController extends MessageController {
 		}
 
 		try {
-		
+
 			List<Task> taskList = invoiceStatusService.findByCriteria(provienceCode, fromdate, todate, taskStatus);
-
-			System.out.println("****************************************");
-			taskList.forEach(x -> System.out.println(x.toString()));
-
-			System.out.println("***********End***************************");
 			return (CollectionUtils.isEmpty(taskList)) ? generateEmptyResponse(request, "Invoice history not found")
 					: ResponseEntity.status(HttpStatus.OK).body(taskList);
 		} catch (Exception exception) {
