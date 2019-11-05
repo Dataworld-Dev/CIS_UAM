@@ -70,30 +70,6 @@ public class TaskController extends MessageController {
 
 
 
-
-   /* private void sendMailToTaskUser(@RequestBody @Valid Task task, MailDTO mailDTO) throws IOException {
-        String mailResponse = null;
-        String userCode = null;
-
-        List<InternalUserRoles> userRolesList = this.internalUserRoleService.getInternalUserName(task.getTaskAllProvinceCode(),task.getTaskAllOCSectionCode(),task.getTaskAllOCRoleCode());
-        System.out.println("user code is " +userRolesList.get(0).getUserCode());
-        System.out.println("user name is " +userRolesList.get(0).getUserName());
-        for(InternalUserRoles user: userRolesList){
-            System.out.println("user code are " +user.getUserCode());
-        }
-        String userName = this.userService.getUserName(userRolesList.get(0).getUserCode());
-        mailDTO.setHeader(ExceptionConstants.header + " " + userName + ",");
-        mailDTO.setSubject("New Task Created");
-        mailDTO.setBody1("New Task have been created for you.");
-        mailDTO.setBody2("Task type is " +task.getTaskReferenceType());
-        mailDTO.setBody3("");
-        mailDTO.setBody4("");;
-        mailDTO.setToAddress(userRolesList.get(0).getUserName());//admin user for later
-        mailResponse = sendMail(mailDTO);
-        System.out.println("mailResponse is "+mailResponse);
-    }*/
-
-
     @PostMapping("/closeTask")
     public ResponseEntity<?> closeTask(HttpServletRequest request, @RequestBody @Valid TaskDTO taskDTO) {
         try {
@@ -133,31 +109,18 @@ public class TaskController extends MessageController {
                                        @RequestParam(required = false) String fromDate,
                                        @RequestParam(required = false) String toDate) throws ParseException {
 
-           //@RequestParam(value="fromDate") @DateTimeFormat(pattern="dd-M-yyyy") Date fromDate,
-                                       //@RequestParam(value="toDate") @DateTimeFormat(pattern="dd-M-yyyy") Date toDate) throws ParseException {
-
-
-       /* System.out.println("userName is "+userName);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy");
-        String formatFromDate = formatter.format(fromDate);
-        System.out.println("Format From Date String" +formatFromDate);
-        String formatToDate = formatter.format(toDate);
-        Date formatDateFrom = formatter.parse(formatFromDate);
-        System.out.println("Format From Date Date" +formatDateFrom);
-        Date formatDateTo = formatter.parse(formatToDate);
-*/
-
         Date todate = null;
         Date fromdate = null;
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yy HH:mm:ss");
-        if(fromDate!=null) {
+       
+        if(fromDate!=null && fromDate.trim().length()>0) {
             fromdate = formatter.parse(fromDate+" 00:00:00");
             System.out.println("test is" +formatter.format(fromdate));
         }
 
 
-        if(toDate!=null) {
+        if(toDate!=null && toDate.trim().length()>0) {
             todate = formatter.parse(toDate+" 23:59:59");
             System.out.println("todate is" +formatter.format(todate));
         }
