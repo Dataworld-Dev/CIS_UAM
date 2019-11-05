@@ -33,23 +33,20 @@ public class InvoiceController extends MessageController {
 	@GetMapping("/getInvoiceAmountDetails")
 	public ResponseEntity<?> getInvoiceAmountStatus(HttpServletRequest request,
 			@RequestParam(required = false) String fromDate, @RequestParam(required = false) String toDate,
-			@RequestParam(required = false) String provienceCode) throws ParseException {
+			@RequestParam(required = false) String provienceCode, @RequestParam(required = false) String taskStatus) throws ParseException {
 
-		String taskStatus = "Closed";
-		
 		Date fromdate = null;//local variable
 		Date todate =null; //local variable
 
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yy HH:mm:ss");
 		
-		
-		if(fromDate!=null) {
+		if(fromDate!=null && fromDate.trim().length()>0) {
 		fromdate = formatter.parse(fromDate + " 00:00:00");
 		System.out.println("test is" + formatter.format(fromdate));
 		}
 		
 		
-		if(toDate!=null) {
+		if(toDate!=null && toDate.trim().length()>0) {
 		todate = formatter.parse(toDate + " 23:59:59");
 		System.out.println("todate is" + formatter.format(todate));
 		}
