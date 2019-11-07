@@ -37,7 +37,7 @@ public class InvoiceController extends MessageController {
 			throws ParseException {
 
 		Date fromdate = null;
-		Date todate = null; 
+		Date todate = null;
 
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yy HH:mm:ss");
 
@@ -56,6 +56,8 @@ public class InvoiceController extends MessageController {
 		try {
 
 			List<Task> taskList = invoiceStatusService.findByCriteria(provienceCode, fromdate, todate, taskStatus);
+
+			System.out.println("---Task List Size---------" + taskList.size());
 			return (CollectionUtils.isEmpty(taskList)) ? generateEmptyResponse(request, "Invoice history not found")
 					: ResponseEntity.status(HttpStatus.OK).body(taskList);
 		} catch (Exception exception) {

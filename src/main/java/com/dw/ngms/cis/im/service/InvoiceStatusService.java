@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -17,23 +15,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.dw.ngms.cis.im.repository.InvoiceStatusRepository;
-import com.dw.ngms.cis.uam.entity.InternalRole;
 import com.dw.ngms.cis.uam.entity.Task;
-import com.dw.ngms.cis.uam.entity.User;
 
 @Service
 public class InvoiceStatusService {
 
 	@Autowired
 	private InvoiceStatusRepository invoiceStatusRepository;
-
-	public List<Task> getInvoiceClosedTasks(String provienceCode, Date fromDate, Date toDate, String taskStatus) {
-
-		System.out.println("provienceCode :" + provienceCode + " fromDate:" + fromDate + " ToDate:" + toDate
-				+ " Task Status :" + taskStatus);
-
-		return this.invoiceStatusRepository.findInvoiceClosedTasks(provienceCode, fromDate, toDate, taskStatus);
-	}
 
 	public List<Task> findByCriteria(String taskAllProvinceCode, Date fromDate, Date toDate, String taskStatus) {
 		return this.invoiceStatusRepository.findAll(new Specification<Task>() {
@@ -49,7 +37,7 @@ public class InvoiceStatusService {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("taskStatus"), taskStatus)));
 				}
 
-				if (taskAllProvinceCode != null && !StringUtils.isEmpty(taskAllProvinceCode)) {
+				if (taskAllProvinceCode != null && !StringUtils.isEmpty(taskAllProvinceCode) && !"all".equalsIgnoreCase(taskAllProvinceCode)) {
 					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("taskAllProvinceCode"), taskAllProvinceCode)));
 				}
 
