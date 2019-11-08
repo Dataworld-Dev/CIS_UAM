@@ -11,9 +11,12 @@ import com.dw.ngms.cis.im.service.RequestService;
 import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
 import com.dw.ngms.cis.uam.dto.FilePathsDTO;
 import com.dw.ngms.cis.uam.dto.MailDTO;
+import com.dw.ngms.cis.uam.dto.RequestsJsonDTO;
+import com.dw.ngms.cis.uam.entity.DocumentStore;
 import com.dw.ngms.cis.uam.entity.TaskLifeCycle;
 import com.dw.ngms.cis.uam.entity.User;
 import com.dw.ngms.cis.uam.jsonresponse.UserControllerResponse;
+import com.dw.ngms.cis.uam.service.DocumentStoreService;
 import com.dw.ngms.cis.uam.service.ProvinceService;
 import com.dw.ngms.cis.uam.service.TaskService;
 import com.dw.ngms.cis.uam.service.UserService;
@@ -82,6 +85,9 @@ public class RequestController extends MessageController {
     private UserService userService;
 
     @Autowired
+    private DocumentStoreService documentStoreService;
+
+    @Autowired
     private ApplicationPropertiesConfiguration applicationPropertiesConfiguration;
 
     @Autowired
@@ -132,6 +138,61 @@ public class RequestController extends MessageController {
             return generateFailureResponse(request, exception);
         }
     }//getTaskHistory
+
+
+    @GetMapping("/getRequestDocuments")
+    public ResponseEntity<?> getRequestDocumentsJson(HttpServletRequest request, @RequestParam String requestCode) {
+        if (StringUtils.isEmpty(requestCode)) {
+            return generateFailureResponse(request, new Exception("Invalid request code passed"));
+        }
+        try {
+            Requests requestElements = this.requestService.getRequestsByRequestCode(requestCode);
+            RequestsJsonDTO requestsJsonDTO = new RequestsJsonDTO();
+
+            if(requestElements!= null){
+                requestElements.getDocumentStoreCode();
+                DocumentStore documentStore = documentStoreService.getDocumentByID(requestElements.getDocumentStoreCode());
+                if(!StringUtils.isEmpty(documentStore)) {
+                    requestsJsonDTO.setRequestDocuments(new String[]{documentStore.getDocumentPath()});
+                }else{
+                    requestsJsonDTO.setRequestDocuments(new String[]{});
+                }
+
+
+                if(!StringUtils.isEmpty(requestElements.getPopFilePath())) {
+                    requestsJsonDTO.setPaymentConfirmation(new String[]{requestElements.getPopFilePath()});
+                }else{
+                    requestsJsonDTO.setPaymentConfirmation(new String[]{});
+                }
+
+
+                if(!StringUtils.isEmpty(requestElements.getDispatchDocs())) {
+                    requestsJsonDTO.setDispatchDocs(new String[]{requestElements.getDispatchDocs()});
+                }else{
+                    requestsJsonDTO.setDispatchDocs(new String[]{});
+                }
+
+
+                if(!StringUtils.isEmpty(requestElements.getInvoiceFilePath())) {
+                    requestsJsonDTO.setInvoiceDocs(new String[]{requestElements.getInvoiceFilePath()});
+                }else{
+                    requestsJsonDTO.setInvoiceDocs(new String[]{});
+                }
+                //requestsJsonDTO.setPaymentConfirmation(new String[]{requestElements.getPopFilePath()});
+                //requestsJsonDTO.setDispatchDocs(new String[]{requestElements.getDispatchDocs()});
+                //requestsJsonDTO.setInvoiceDocs(new String[]{requestElements.getInvoiceFilePath()});
+
+
+            }
+
+
+            return (StringUtils.isEmpty(requestElements)) ? generateEmptyResponse(request, "Request status not found") :
+                    ResponseEntity.status(HttpStatus.OK).body(requestsJsonDTO);
+        } catch (Exception exception) {
+            return generateFailureResponse(request, exception);
+        }
+    }//getRequestDocumentsJson
+
 
     @GetMapping("/getRequestStatus")
     public ResponseEntity<?> getTaskCurrentStatus(HttpServletRequest request, @RequestParam String requestcode) {

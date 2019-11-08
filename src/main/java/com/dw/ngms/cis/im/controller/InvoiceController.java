@@ -56,7 +56,7 @@ public class InvoiceController extends MessageController {
 		try {
 
 			List<Task> taskList = invoiceStatusService.findByCriteria(provienceCode, fromdate, todate, taskStatus);
-			return (CollectionUtils.isEmpty(taskList)) ? generateEmptyResponse(request, "Invoice history not found")
+			return (CollectionUtils.isEmpty(taskList)) ? generateEmptyWithOKResponse(request, "Invoice history not found")
 					: ResponseEntity.status(HttpStatus.OK).body(taskList);
 		} catch (Exception exception) {
 			return generateFailureResponse(request, exception);
