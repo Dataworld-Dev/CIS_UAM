@@ -1,33 +1,35 @@
 package com.dw.ngms.cis.im.controller;
 
 
-import com.dw.ngms.cis.controller.MessageController;
-import com.dw.ngms.cis.im.dto.InvoiceDTO;
-import com.dw.ngms.cis.im.entity.RequestItems;
-import com.dw.ngms.cis.im.entity.Requests;
-import com.dw.ngms.cis.im.service.ApplicationPropertiesService;
-import com.dw.ngms.cis.im.service.RequestItemService;
-import com.dw.ngms.cis.im.service.RequestService;
-import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
-import com.dw.ngms.cis.uam.dto.FilePathsDTO;
-import com.dw.ngms.cis.uam.dto.MailDTO;
-import com.dw.ngms.cis.uam.dto.RequestsJsonDTO;
-import com.dw.ngms.cis.uam.entity.DocumentStore;
-import com.dw.ngms.cis.uam.entity.TaskLifeCycle;
-import com.dw.ngms.cis.uam.entity.User;
-import com.dw.ngms.cis.uam.jsonresponse.UserControllerResponse;
-import com.dw.ngms.cis.uam.service.DocumentStoreService;
-import com.dw.ngms.cis.uam.service.ProvinceService;
-import com.dw.ngms.cis.uam.service.TaskService;
-import com.dw.ngms.cis.uam.service.UserService;
-import com.dw.ngms.cis.uam.storage.StorageService;
-import com.dw.ngms.cis.workflow.api.ProcessAdditionalInfo;
-import com.dw.ngms.cis.workflow.model.Target;
-import com.google.gson.Gson;
-import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-import lombok.extern.slf4j.Slf4j;
+import static org.springframework.util.StringUtils.isEmpty;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -43,25 +45,46 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.*;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import com.dw.ngms.cis.controller.MessageController;
+import com.dw.ngms.cis.im.dto.InvoiceDTO;
+import com.dw.ngms.cis.im.entity.RequestItems;
+import com.dw.ngms.cis.im.entity.Requests;
+import com.dw.ngms.cis.im.service.ApplicationPropertiesService;
+import com.dw.ngms.cis.im.service.RequestItemService;
+import com.dw.ngms.cis.im.service.RequestService;
+import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
+import com.dw.ngms.cis.uam.dto.FilePathsDTO;
+import com.dw.ngms.cis.uam.dto.MailDTO;
+import com.dw.ngms.cis.uam.dto.RequestsJsonDTO;
+import com.dw.ngms.cis.uam.dto.SendPopInfo;
+import com.dw.ngms.cis.uam.entity.DocumentStore;
+import com.dw.ngms.cis.uam.entity.TaskLifeCycle;
+import com.dw.ngms.cis.uam.entity.User;
+import com.dw.ngms.cis.uam.jsonresponse.UserControllerResponse;
+import com.dw.ngms.cis.uam.service.DocumentStoreService;
+import com.dw.ngms.cis.uam.service.ProvinceService;
+import com.dw.ngms.cis.uam.service.TaskService;
+import com.dw.ngms.cis.uam.service.UserService;
+import com.dw.ngms.cis.uam.storage.StorageService;
+import com.dw.ngms.cis.workflow.api.ProcessAdditionalInfo;
+import com.dw.ngms.cis.workflow.model.Target;
+import com.google.gson.Gson;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
 
-import static org.springframework.util.StringUtils.isEmpty;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by swaroop on 2019/04/19.
@@ -1548,4 +1571,139 @@ public class RequestController extends MessageController {
         sendEmail(mailDTO);
     }//sendMail
 
+    
+
+	/*
+	 * Send email to Cashier, get document path from IMRequests table and send mail 
+	 * @PostMapping
+	 * @Request
+	 * 		@HttpServletRequest - requestObject 
+	 * 		@DTOObject - SendPopInfo (Required)
+	 * @Response
+	 * 		JsonObject(Requests.class)
+	 */
+	@PostMapping(value= "/sendPopToCashier", produces= {MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> sendPopToCashier(HttpServletRequest request, @RequestBody @Valid SendPopInfo sendPopInfo) {
+		try {
+			System.out.println("Test 1");
+			String filePath = null;
+			String requestCode = sendPopInfo.getRequestCode();
+			String emailAddress = sendPopInfo.getEmailAddress();
+			final String fileName = "Payment Verification Document";
+
+			if (StringUtils.isEmpty(requestCode) && requestCode.trim().length() == 0)
+				return generateEmptyWithOKResponse(request, "Request Code should not be empty");
+			
+			if (StringUtils.isEmpty(emailAddress) && requestCode.trim().length() == 0)
+				return generateEmptyWithOKResponse(request, "Email should not be empty");
+			
+			if (requestCode != null) 
+				filePath = requestService.getFilePathByRequestItemCode(requestCode);
+
+			
+			if (filePath == null && isEmpty(filePath)) 
+				return generateEmptyWithOKResponse(request, " File  not found for Request code :" + requestCode);
+			
+			//filePath="C:/Personal/sample.pdf";//Testing Hardcoded value
+			File attachement = new File(filePath);
+			if(!attachement.exists()) 
+				return generateEmptyWithOKResponse(request, " File does not existing in the location :" + filePath);
+			
+			
+			ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+			emailExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						sendMailWithPOPAttachment(emailAddress, fileName, attachement);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			emailExecutor.shutdown();
+		} 
+		catch (Exception exception) {
+			return generateFailureResponse(request, exception);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body("Sent email Sucessfully");
+	}
+
+	
+	private void sendMailWithPOPAttachment(String emailAddress, String fileName, File file) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		MailDTO mailDTO = new MailDTO();
+		model.put("firstName", "Cashier,");
+		model.put("body1", "Please verify the payment based on the attachment.");
+		model.put("body2", "");
+		model.put("body3", "");
+		model.put("body4", "");
+
+		mailDTO.setMailSubject("Payment Verification");
+		model.put("FOOTER", "CIS ADMIN");
+		mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
+		mailDTO.setMailTo(emailAddress);
+		mailDTO.setModel(model);
+
+		sendEmail(mailDTO, fileName, file);
+	}
+	 
+	
+	/*
+	 * Save/update Tracking into IMRequests table
+	 * @PutMapping
+	 * @Request
+	 * 		@HttpServletRequest - requestObject 
+	 * 		@RequestParam - requestCode (Required)
+	 * 		@RequestParam - trackingNo  (Optional)
+	 * @Response
+	 * 		JsonObject(Requests.class)
+	 */
+	@PutMapping("/setRequestTrackingNo")
+	public ResponseEntity<?> setRequestTrackingNo(HttpServletRequest request,
+			@RequestParam(required = false) String trackingNo, @RequestParam(required = false) String requestCode) {
+		try {
+
+			if (StringUtils.isEmpty(requestCode) && requestCode.trim().length() == 0)
+				return generateEmptyWithOKResponse(request, "Invalid request code");
+
+			Requests updateRequest = this.requestService.updateRequestOnTrackingNo(requestCode, trackingNo);
+
+			return (StringUtils.isEmpty(updateRequest))
+					? generateEmptyWithOKResponse(request, "No request found, given request code:" + requestCode)
+					: ResponseEntity.status(HttpStatus.OK).body(updateRequest);
+
+		} catch (Exception exception) {
+			return generateFailureResponse(request, exception);
+		}
+	}
+	
+	
+	/*
+	 * Get Tracking into IMRequests table
+	 * @GetMapping
+	 * @Request 
+	 * 		@HttpServletRequest - requestObject
+	 * 		@RequestParam - requestCode (Mandatory)
+	 * @Response
+	 * 		JsonString(String.class)
+	 */
+	@GetMapping(value="/getRequestTrackingNo", produces= { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getRequestTrackingNo(HttpServletRequest request, @RequestParam(required = true) String requestCode) {
+		try {
+
+			if (StringUtils.isEmpty(requestCode) && requestCode.trim().length() == 0)
+				return generateEmptyWithOKResponse(request, "Invalid request code");
+
+			Requests requests = this.requestService.getRequestsByRequestCode(requestCode);
+
+			return (StringUtils.isEmpty(requests))
+					? generateEmptyWithOKResponse(request, "No request found, given request code:" + requestCode)
+					: ResponseEntity.status(HttpStatus.OK).body(requests.getTrackingNumnber());
+
+		} catch (Exception exception) {
+			return generateFailureResponse(request, exception);
+		}
+	}
+    
 }

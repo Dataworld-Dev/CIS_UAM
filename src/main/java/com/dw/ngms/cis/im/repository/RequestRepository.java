@@ -63,5 +63,8 @@ public interface RequestRepository extends JpaRepository<Requests, UUID>  {
     Requests getRequestsByRequestCodeUserCodeUserName(@Param("requestCode") String requestCode,
                                                       @Param("userCode") String userCode,
                                                       @Param("userName") String userName);
+    
+    @Query("SELECT u.popFilePath FROM Requests u WHERE u.requestCode = :requestCode ")
+    String  getFilePathByRequestItemCode(@Param("requestCode") String requestCode);
 
 }

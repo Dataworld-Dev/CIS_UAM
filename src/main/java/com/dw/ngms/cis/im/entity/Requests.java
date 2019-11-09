@@ -177,6 +177,10 @@ public class Requests implements Serializable {
     @Column(name = "LAPSESTATUS", length = 20)
     private LapseStatus lapseStatus = LapseStatus.NONE;
 
+    @Column(name = "TRACKINGNUMBER", length = 25)
+    private String trackingNumnber;
+    
+    
     @Transient
     private String processId;    
     @Transient

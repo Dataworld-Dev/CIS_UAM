@@ -244,4 +244,19 @@ public class RequestService {
 		String value = env.getRequiredProperty(propertyKey);		
 		return (!StringUtils.isEmpty(value) && value.contains("{0}")) ? value.replace("{0}", requestCode) : value;
 	}//getPropertyValue
+	
+	
+	public String getFilePathByRequestItemCode(String requestCode) {
+    	return this.requestRepository.getFilePathByRequestItemCode(requestCode);
+    }
+	
+	// updateTrackingNo
+	public Requests updateRequestOnTrackingNo(String requestCode, String trackingNo) {
+		Requests request = getRequestsByRequestCode(requestCode.trim());
+		if (request == null) {
+			return null;
+		}
+		request.setTrackingNumnber(trackingNo);
+		return this.requestRepository.save(request);
+	}// updateTrackingNo
 }
