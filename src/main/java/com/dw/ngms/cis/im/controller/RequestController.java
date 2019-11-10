@@ -532,8 +532,6 @@ public class RequestController extends MessageController {
     public ResponseEntity<?> cancelRequest(HttpServletRequest request, @RequestBody @Valid Requests requests) {
         try {
         	String processId = "infoRequest";
-        	requests = requestService.getRequestsByRequestCode("REQ250");
-        	requests.setDescription("test cancellllllllllllllll");
         	requests.setModifiedDate(new Date());
         	requests.setModifiedUserCode(requests.getUserCode());
         	Requests requestToSave = this.requestService.saveRequest(requests);
