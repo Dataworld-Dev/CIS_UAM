@@ -132,6 +132,16 @@ public class TaskService {
     	return processEngine.processUserState(task, additionalInfo);
     }//processUserState
 	
+	public void cancelProcess(String processId, Requests requests) {
+    	if(processId == null)
+    		throw new RuntimeException("Process id is reqired to start process");
+    	Process process = processEngine.getProcessById(processId);
+    	Task task = getTask(requests.getRequestCode());
+    	task.setTaskCLoseDESC("Cancelled by user: "+requests.getDescription());
+    	ProcessAdditionalInfo additionalInfo = populateAdditionalInfo(task, requests);
+    	this.endProcess(process, task, additionalInfo);
+    }//cancelProcess
+	
     public void endProcess(Process process, Task task, ProcessAdditionalInfo additionalInfo) {
     	processEngine.endProcess(process, task, additionalInfo);
     }//processUserState

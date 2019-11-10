@@ -525,6 +525,23 @@ public class RequestController extends MessageController {
         }
     }//createRequest
 
+    @PostMapping("/cancelRequest")
+    public ResponseEntity<?> cancelRequest(HttpServletRequest request, @RequestBody @Valid Requests requests) {
+        try {
+        	String processId = "infoRequest";
+        	requests.setModifiedDate(new Date());
+        	requests.setModifiedUserCode(requests.getUserCode());
+        	Requests requestToSave = this.requestService.saveRequest(requests);
+        	
+        	updateSavedRequests(requests, requestToSave);
+            taskService.cancelProcess(processId, requests);
+
+            return ResponseEntity.status(HttpStatus.OK).body(requests);
+        } catch (Exception exception) {
+            return generateFailureResponse(request, exception);
+        }
+    }//cancelRequest
+    
     private void updateSavedRequests(Requests requests, Requests requestToSave) {
         requestToSave.setAssigneeInfoManager(requests.getAssigneeInfoManager());
         requestToSave.setAssigneeInfoOfficer(requests.getAssigneeInfoOfficer());
