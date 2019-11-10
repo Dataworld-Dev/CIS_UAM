@@ -69,10 +69,12 @@ import com.dw.ngms.cis.uam.dto.MailDTO;
 import com.dw.ngms.cis.uam.dto.RequestsJsonDTO;
 import com.dw.ngms.cis.uam.dto.SendPopInfo;
 import com.dw.ngms.cis.uam.entity.DocumentStore;
+import com.dw.ngms.cis.uam.entity.InternalUserRoles;
 import com.dw.ngms.cis.uam.entity.TaskLifeCycle;
 import com.dw.ngms.cis.uam.entity.User;
 import com.dw.ngms.cis.uam.jsonresponse.UserControllerResponse;
 import com.dw.ngms.cis.uam.service.DocumentStoreService;
+import com.dw.ngms.cis.uam.service.InternalUserRoleService;
 import com.dw.ngms.cis.uam.service.ProvinceService;
 import com.dw.ngms.cis.uam.service.TaskService;
 import com.dw.ngms.cis.uam.service.UserService;
@@ -103,7 +105,8 @@ public class RequestController extends MessageController {
     private StorageService testService;
     @Autowired
     private TaskService taskService;
-
+    @Autowired
+    private InternalUserRoleService internalUserRoleService;
     @Autowired
     private UserService userService;
 
@@ -529,6 +532,8 @@ public class RequestController extends MessageController {
     public ResponseEntity<?> cancelRequest(HttpServletRequest request, @RequestBody @Valid Requests requests) {
         try {
         	String processId = "infoRequest";
+        	requests = requestService.getRequestsByRequestCode("REQ250");
+        	requests.setDescription("test cancellllllllllllllll");
         	requests.setModifiedDate(new Date());
         	requests.setModifiedUserCode(requests.getUserCode());
         	Requests requestToSave = this.requestService.saveRequest(requests);
@@ -536,6 +541,8 @@ public class RequestController extends MessageController {
         	updateSavedRequests(requests, requestToSave);
             taskService.cancelProcess(processId, requests);
 
+            this.cancellationNotification(requestToSave);
+            
             return ResponseEntity.status(HttpStatus.OK).body(requests);
         } catch (Exception exception) {
             return generateFailureResponse(request, exception);
@@ -1507,6 +1514,36 @@ public class RequestController extends MessageController {
         }
     }//zipFiles
 
+    private void cancellationNotification(Requests requests) {
+        try {              
+        	User user = null;
+            List<InternalUserRoles> userList = new ArrayList<>();
+            
+            if(!StringUtils.isEmpty(requests.getProvinceCode()) && !StringUtils.isEmpty(requests.getSectionCode())) {
+            	userList = this.internalUserRoleService.getUsersByProvinceCodeAndSectionCodeAndUserRoleCode(requests.getProvinceCode(), 
+            			requests.getSectionCode(), "IN013");
+            } else if (!StringUtils.isEmpty(requests.getProvinceCode())) {
+            	userList = this.internalUserRoleService.getUsersByProvinceCodeAndUserRoleCode(requests.getProvinceCode(), "IN013");      
+            }
+            if(!CollectionUtils.isEmpty(userList))
+            	user = this.userService.findByUserCode(userList.get(0).getUserCode()); 
+            
+            String email = (user != null && user.getUserName() != null) ? user.getUserName() : user.getEmail();
+            log.info("Email is: " + email);
+            if (StringUtils.isEmpty(email)) {
+                log.error("Could not find invoice generated user email, No payment confirmation mail sent");
+                return ;
+            }
+            String userFullName = (user != null) ? user.getFirstName() + " " + user.getSurname() : "";
+            String subject = "Cancellation notification";
+            String body = "Cancellation processed successfully, reference code: " + requests.getRequestCode();            
+                       
+            sendMail(requests, new MailDTO(), userFullName, subject, body, email);
+        } catch (Exception e) {
+            log.error("Failed to send cancellation notification, " + e.getMessage());
+        }
+    }//cancellationNotification
+    
     private void uploadPaymentConfirmationNotification(Requests requests, boolean isUser) {
         try {              
             User user = null;

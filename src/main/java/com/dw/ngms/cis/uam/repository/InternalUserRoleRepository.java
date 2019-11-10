@@ -35,14 +35,18 @@ public interface InternalUserRoleRepository  extends JpaRepository<InternalUserR
 	@Query("select u from InternalUserRoles u where u.provinceCode = :provinceCode and USERROLECODE = 'IN014'")
 	List<InternalUserRoles> getOfficersOfMySectionProvinceCode(@Param("provinceCode") String provinceCode);
 
-
 	@Query("select u from InternalUserRoles u where u.sectionCode = :sectionCode and USERROLECODE = 'IN014'")
 	List<InternalUserRoles> getOfficersOfMySectionSectionCode(@Param("sectionCode") String sectionCode);
 
-
+	@Query("select u from InternalUserRoles u where u.provinceCode = :provinceCode and u.sectionCode = :sectionCode and USERROLECODE = :userRoleCode")
+	List<InternalUserRoles> getUsersByProvinceCodeAndSectionCodeAndUserRoleCode(@Param("provinceCode") String provinceCode, 
+			@Param("sectionCode") String sectionCode, @Param("userRoleCode") String userRoleCode);
+	
+	@Query("select u from InternalUserRoles u where u.provinceCode = :provinceCode and USERROLECODE = :userRoleCode")
+	List<InternalUserRoles> getUsersByProvinceCodeAndUserRoleCode(@Param("provinceCode") String provinceCode, @Param("userRoleCode") String userRoleCode);
+	
 	@Query("select u from InternalUserRoles u where u.userCode = :userCode and Lower(u.userName) = :userName and u.provinceCode = :provinceCode and u.sectionCode IS NULL and u.roleCode = :roleCode and u.internalRoleCode = :internalRoleCode")
 	InternalUserRoles getInternalUserRoleCodeWithEmptySectionCode(@Param("userCode") String userCode,@Param("userName") String userName,@Param("provinceCode") String provinceCode,@Param("roleCode") String roleCode, @Param("internalRoleCode") String internalRoleCode);
-
 
 	@Query("select u from InternalUserRoles u where u.userCode = :userCode")
 	List<InternalUserRoles> getChildElementsInternal(@Param("userCode") String userCode);
