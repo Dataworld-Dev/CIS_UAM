@@ -536,8 +536,9 @@ public class RequestController extends MessageController {
     	}
         try {
         	String processId = "infoRequest";
+        	String description = requests.getDescription();
         	requests = requestService.getRequestsByRequestCode(requests.getRequestCode());
-        	requests.setDescription(requests.getDescription());
+        	requests.setDescription(description);
         	requests.setModifiedDate(new Date());
         	requests.setModifiedUserCode(requests.getUserCode());
         	Requests requestToSave = this.requestService.saveRequest(requests);
