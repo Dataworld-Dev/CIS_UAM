@@ -264,7 +264,7 @@ public class TaskService {
     	if(task == null) 
     		throw new RuntimeException("Task not found with request code: "+ requestcode);		
 		
-		return task.getTaskStatus();
+		return (task.getTaskStatus() != null) ? task.getTaskStatus().trim() : task.getTaskStatus();
 	}//getTaskCurrentStatus
 
     public List<TaskLifeCycle> getTasksLifeCycleByTaskReferenceCode(String taskReferenceCode) {
