@@ -530,13 +530,18 @@ public class RequestController extends MessageController {
 
     @PostMapping("/cancelRequest")
     public ResponseEntity<?> cancelRequest(HttpServletRequest request, @RequestBody @Valid Requests requests) {
+    	if(requests == null || StringUtils.isEmpty(requests.getRequestCode()) || 
+    			StringUtils.isEmpty(requests.getDescription())) {
+    		return generateEmptyResponse(request, "No Request found with requestCode and description");
+    	}
         try {
         	String processId = "infoRequest";
+        	requests = requestService.getRequestsByRequestCode(requests.getRequestCode());
+        	requests.setDescription(requests.getDescription());
         	requests.setModifiedDate(new Date());
         	requests.setModifiedUserCode(requests.getUserCode());
         	Requests requestToSave = this.requestService.saveRequest(requests);
-        	
-        	updateSavedRequests(requests, requestToSave);
+        	        	
             taskService.cancelProcess(processId, requests);
 
             this.cancellationNotification(requestToSave);

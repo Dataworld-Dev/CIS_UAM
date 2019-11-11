@@ -125,6 +125,8 @@ public class ProcessEngineImpl implements ProcessEngine<Task>{
 			updateRoleAndUserAssociations(task, additionalInfo, targetSequence);
 		}
 		updateAssignedUser(task);
+		if(!StringUtils.isEmpty(additionalInfo.getTargetDescription()))
+			task.setTaskCLoseDESC(additionalInfo.getTargetDescription());
 		taskRepository.save(task);
 		addLifeCycleEntry(task, additionalInfo);
 		return getTargetByIdAndProcessId(additionalInfo.getTargetSequenceId(), task.getTaskType());
@@ -139,6 +141,7 @@ public class ProcessEngineImpl implements ProcessEngine<Task>{
 		}
 		SequenceFlow sequence = process.getEndSequenceFlow();
 		task.setTaskStatus(sequence.getState());
+		updateTaskDetails(task, additionalInfo);
 		taskRepository.save(task);
 		addLifeCycleEntry(task, additionalInfo);
 	}//endProcess
@@ -315,10 +318,11 @@ public class ProcessEngineImpl implements ProcessEngine<Task>{
 				task.setTaskAllOCSectionCode(additionalInfo.getSectionCode());
 			if(!StringUtils.isEmpty(additionalInfo.getUserCode()))
 				task.setTaskDoneUserCode(additionalInfo.getUserCode());
-			if(!StringUtils.isEmpty(additionalInfo.getUserName()))
+			if(!StringUtils.isEmpty(additionalInfo.getUserName())) {
 				task.setTaskDoneUserName(additionalInfo.getUserName());
-			String taskDoneUserFullName = getUserFullName(additionalInfo.getUserName());					
-			task.setTaskDoneUserFullName(taskDoneUserFullName);
+				String taskDoneUserFullName = getUserFullName(additionalInfo.getUserName());					
+				task.setTaskDoneUserFullName(taskDoneUserFullName);
+			}
 		}
 		task.setUpdatedDate(new Date());
 		if("Closed".equalsIgnoreCase(task.getTaskCode())) {

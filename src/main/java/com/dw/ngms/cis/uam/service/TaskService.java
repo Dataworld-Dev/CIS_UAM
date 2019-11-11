@@ -139,6 +139,7 @@ public class TaskService {
     	Task task = getTask(requests.getRequestCode());
     	task.setTaskCLoseDESC("Cancelled by user: "+requests.getDescription());
     	ProcessAdditionalInfo additionalInfo = populateAdditionalInfo(task, requests);
+    	updateAdditionalInfo(additionalInfo, requests);
     	this.endProcess(process, task, additionalInfo);
     }//cancelProcess
 	
