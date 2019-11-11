@@ -226,7 +226,7 @@ public class RequestController extends MessageController {
             return generateFailureResponse(request, new Exception("Invalid request code passed"));
         }
         try {
-            String status = taskService.getTaskCurrentStatus(requestcode);
+            String status = getTaskCurrentStatus(requestcode);
             return (StringUtils.isEmpty(status)) ? generateEmptyResponse(request, "Request status not found") :
                     ResponseEntity.status(HttpStatus.OK).body(status);
         } catch (Exception exception) {
@@ -234,6 +234,14 @@ public class RequestController extends MessageController {
         }
     }//getTaskCurrentStatus
 
+	private String getTaskCurrentStatus(String requestcode) {
+		return taskService.getTaskCurrentStatus(requestcode);
+	}//getTaskCurrentStatus
+
+	private String getRequestStatus(String requestcode) {
+		return "Closed".equalsIgnoreCase(getTaskCurrentStatus(requestcode)) ? "Closed" : "Open";
+	}//getRequestStatus
+	
     @PostMapping("/processUserState")
     public ResponseEntity<?> processUserState(HttpServletRequest request, @RequestBody @Valid ProcessAdditionalInfo additionalInfo) {
         if (additionalInfo == null || StringUtils.isEmpty(additionalInfo.getRequestCode()) || StringUtils.isEmpty(additionalInfo.getTaskId()) ||
@@ -259,6 +267,7 @@ public class RequestController extends MessageController {
             if (StringUtils.isEmpty(provinceCode) || "all".equalsIgnoreCase(provinceCode.trim()) && !StringUtils.isEmpty(userCode)) {
                 requestList = requestService.getRequestByUserCode(userCode);
                 for (Requests req : requestList) {
+                	req.setCurrentStatus(getRequestStatus(req.getRequestCode()));
                     List<RequestItems> requestItemsList = new ArrayList<>();
                     System.out.println("Request code is " + req.getRequestCode());
                     List<RequestItems> requestItems = this.requestItemService.getRequestsByRequestItemCode(req.getRequestCode());
@@ -267,25 +276,21 @@ public class RequestController extends MessageController {
                             System.out.println("Internal user roles" + in.getGazetteType1());
                             RequestItems requestItems1 = getRequestItems(in);
                             requestItemsList.add(requestItems1);
-                            req.setCurrentStatus(taskService.getTaskCurrentStatus(in.getRequestCode()) == "Closed"? "Closed" : "Open");
                             req.setRequestItems(requestItemsList);
-
                         }
                     }
-
                 }
-
             } else if (!StringUtils.isEmpty(userCode) && !StringUtils.isEmpty(provinceCode.trim())) {
                 requestList = requestService.getRequestByUserCodeProvinceCode(userCode, provinceCode);
                 for (Requests req : requestList) {
+                	req.setCurrentStatus(getRequestStatus(req.getRequestCode()));
                     List<RequestItems> requestItemsList = new ArrayList<>();
                     List<RequestItems> requestItems = this.requestItemService.getRequestsByRequestItemCode(req.getRequestCode());
                     if (!isEmpty(requestItems) && requestItems != null) {
                         for (RequestItems in : requestItems) {
                             System.out.println("Internal user roles" + in.getGazetteType1());
                             RequestItems requestItems1 = getRequestItems(in);
-                            requestItemsList.add(requestItems1);
-                            req.setCurrentStatus(taskService.getTaskCurrentStatus(in.getRequestCode()) == "Closed"? "Closed" : "Open");
+                            requestItemsList.add(requestItems1);                            
                             req.setRequestItems(requestItemsList);
 
                         }
@@ -381,6 +386,8 @@ public class RequestController extends MessageController {
                 System.out.println("Total value  is" + totalSum);
 
             }
+            requestList.forEach(r -> {r.setCurrentStatus(getRequestStatus(r.getRequestCode()));});
+            
             return (CollectionUtils.isEmpty(requestList)) ? ResponseEntity.status(HttpStatus.OK).body(totalSum)
                     : ResponseEntity.status(HttpStatus.OK).body(totalSum);
         } catch (Exception exception) {
@@ -398,6 +405,9 @@ public class RequestController extends MessageController {
             if (!StringUtils.isEmpty(requestItemsList)) {
                 requests.setRequestItems(requestItemsList);
             }
+            if(requests != null)
+            	requests.setCurrentStatus(getRequestStatus(requests.getRequestCode()));
+            
             return (requests != null) ? ResponseEntity.status(HttpStatus.OK).body(requests)
                     : generateEmptyResponse(request, "Request(s) not found");
         } catch (Exception exception) {
@@ -1755,6 +1765,9 @@ public class RequestController extends MessageController {
 
 			Requests requests = this.requestService.getRequestsByRequestCode(requestCode);
 
+			if(requests != null)
+            	requests.setCurrentStatus(getRequestStatus(requests.getRequestCode()));
+			
 			return (StringUtils.isEmpty(requests))
 					? generateEmptyWithOKResponse(request, "No request found, given request code:" + requestCode)
 					: ResponseEntity.status(HttpStatus.OK).body(requests.getTrackingNumnber());
