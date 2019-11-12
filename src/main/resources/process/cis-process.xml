@@ -84,7 +84,7 @@
 		        </sequenceFlow>
 		        <sequenceFlow id="flow4" name="usrState3" state="GenerateInvoice" targetState="Reassigned" restDependancy=""/>
 				<sequenceFlow id="flow5" name="usrState4" state="UploadPOP" targetState="Reassigned" restDependancy=""/>
-				<sequenceFlow id="flow6" name="usrState5" state="POPVerified" targetState="POPVerified" restDependancy=""/>
+				<sequenceFlow id="flow6" name="usrState5" state="POPVerified" targetState="Reassigned" restDependancy=""/>
 		        <sequenceFlow id="flow7" name="usrState6" state="Scrutinise" targetState="" restDependancy="">
 		        	<assigneeList>
 		        		<assignee type="Role" name="Information Scrutinizer"/>
