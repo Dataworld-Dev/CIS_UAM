@@ -62,6 +62,12 @@
 				        		<assigner type="Role" name="Information Officer"/>
 				        	</assignerList>
 		        		</target>
+						<target id="flow6" restRequest="popVerified" description="Proof of payment verified">
+		        			<assignerList>
+		        				<assigner type="Role" name="Information Manager"/>
+				        		<assigner type="Role" name="Information Officer"/>
+				        	</assignerList>
+		        		</target>
 		        		<target id="flow7" restRequest="restScrutinise" description="Scrutinise">
 		        			<assignerList>
 		        				<assigner type="Role" name="Information Manager"/>
