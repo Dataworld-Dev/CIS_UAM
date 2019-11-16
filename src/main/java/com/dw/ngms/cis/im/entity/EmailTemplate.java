@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by swaroop on 2019/11/16.
@@ -46,9 +47,11 @@ public class EmailTemplate {
     @Column(name = "IN_PUT_PARAMS")
     private String inputParams;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "CREATED_DATE")
-    private String createdDate;
+    private Date createdDate;
 
-    @Column(name = "MODIFIED_DATE")
-    private String modifiedDate;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "MODIFIED_DATE", nullable = true)
+    private Date modifiedDate = new Date();
 }
