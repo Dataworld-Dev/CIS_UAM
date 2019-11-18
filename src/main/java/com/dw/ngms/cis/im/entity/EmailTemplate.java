@@ -23,25 +23,25 @@ public class EmailTemplate {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "generator")
     private Long emailTemplateId;
 
-    @Column(name = "CATEGORY")
+    @Column(name = "EMAIL_CATEGORY")
     private String category;
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "EMAIL_DESCRIPTION")
     private String description;
 
-    @Column(name = "SUBJECT")
+    @Column(name = "EMAIL_SUBJECT")
     private String subject;
 
-    @Column(name = "HEADER")
+    @Column(name = "EMAIL_HEADER")
     private String header;
 
-    @Column(name = "BODY")
+    @Column(name = "EMAIL_BODY")
     private String body;
 
-    @Column(name = "FOOTER")
+    @Column(name = "EMAIL_FOOTER")
     private String footer;
 
-    @Column(name = "FROM")
+    @Column(name = "EMAIL_FROM")
     private String from;
 
     @Column(name = "IN_PUT_PARAMS")
