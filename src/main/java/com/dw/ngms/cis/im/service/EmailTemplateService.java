@@ -8,7 +8,7 @@ public interface EmailTemplateService {
 
 	public List<EmailTemplate> getEmailTemplateInfo() ;
 	
-	public EmailTemplate getEmailTemplateById(String emailId);
+	public EmailTemplate getEmailTemplateById(long emailId);
 	
 	public EmailTemplate updateEmailTemplate(EmailTemplate template);
 	

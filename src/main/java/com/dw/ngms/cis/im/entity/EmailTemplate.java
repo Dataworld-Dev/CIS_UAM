@@ -3,8 +3,14 @@ package com.dw.ngms.cis.im.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 /**
@@ -14,6 +20,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Table(name = "EMAILTEMPLATE")
 public class EmailTemplate {
 
@@ -31,13 +38,11 @@ public class EmailTemplate {
 
     @Column(name = "EMAIL_SUBJECT")
     private String subject;
-
     @Column(name = "EMAIL_HEADER")
     private String header;
 
     @Column(name = "EMAIL_BODY")
     private String body;
-
     @Column(name = "EMAIL_FOOTER")
     private String footer;
 
