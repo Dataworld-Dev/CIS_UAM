@@ -58,9 +58,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dw.ngms.cis.controller.MessageController;
 import com.dw.ngms.cis.im.dto.InvoiceDTO;
+import com.dw.ngms.cis.im.entity.EmailTemplate;
 import com.dw.ngms.cis.im.entity.RequestItems;
 import com.dw.ngms.cis.im.entity.Requests;
 import com.dw.ngms.cis.im.service.ApplicationPropertiesService;
+import com.dw.ngms.cis.im.service.EmailTemplateService;
 import com.dw.ngms.cis.im.service.RequestItemService;
 import com.dw.ngms.cis.im.service.RequestService;
 import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
@@ -121,7 +123,9 @@ public class RequestController extends MessageController {
 
     @Autowired
     private ProvinceService provinceService;
-
+    
+    @Autowired
+    private EmailTemplateService email;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -653,7 +657,16 @@ public class RequestController extends MessageController {
                 String fileName = req.getInvoiceFilePath();
                 File fileLater = new File(req.getInvoiceFilePath());
                 MailDTO mailDTO = new MailDTO();
+               
+                EmailTemplate template = this.email.getEmailTemplateById(1);
+                mailDTO.setBody1(template.getBody());
+                mailDTO.setSubject(template.getSubject());
+                mailDTO.setFooter(template.getFooter());
+                mailDTO.setHeader(template.getHeader());
+              
+                
                 sendMailInvoiceUser(req, mailDTO, fileName, fileLater);
+                
                 ProcessAdditionalInfo processAdditionalInfo = getProcessAdditionalInfo(invoiceDTO);
                 processUserState(request, processAdditionalInfo);
                 return ResponseEntity.status(HttpStatus.OK).body("Generated Invoice Successfully");
@@ -686,14 +699,17 @@ public class RequestController extends MessageController {
             firstName = user.getFirstName();
             lastName = user.getSurname();
         }
-        model.put("firstName", firstName + " " + lastName);
-        model.put("body1", "Invoice Generated Successfully");
+        model.put("firstName", mailDTO.getHeader()+"" +firstName + " " + lastName);
+       // model.put("body1", "Invoice Generated Successfully");
+        model.put("body1", mailDTO.getBody1());
         model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
 
-        mailDTO.setMailSubject("DRDLR:Invoice");
-        model.put("FOOTER", "CIS ADMIN");
+        //mailDTO.setMailSubject("DRDLR:Invoice");
+        mailDTO.setMailSubject(mailDTO.getSubject());
+      //  model.put("FOOTER", "CIS ADMIN");
+        model.put("FOOTER", mailDTO.getFooter());
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(requests.getUserName());
         mailDTO.setModel(model);
