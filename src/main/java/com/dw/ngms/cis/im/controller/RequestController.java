@@ -727,7 +727,7 @@ public class RequestController extends MessageController {
 
     }
 
-    private void sendMailWithFTPPAth(Requests requests, MailDTO mailDTO, String ftpFilePath) throws Exception {
+	private void sendMailWithFTPPAth(Requests requests, MailDTO mailDTO, String ftpFilePath) throws Exception {
         String firstName = null;
         String lastName = null;
         Map<String, Object> model = new HashMap<String, Object>();
@@ -1620,7 +1620,8 @@ public class RequestController extends MessageController {
             mailDTO.setFooter(template.getFooter());
             mailDTO.setHeader(template.getHeader());
 
-            String subject = mailDTO.getMailSubject();
+            //String subject = mailDTO.getMailSubject();
+            String subject = mailDTO.getSubject();
 
 
             String body = mailDTO.getBody1();
@@ -1708,7 +1709,8 @@ public class RequestController extends MessageController {
 
 
         /*String subject = "Request Created";*/
-        String subject = mailDTO.getMailSubject();
+        //String subject = mailDTO.getMailSubject();
+        String subject = mailDTO.getSubject();
 
 
        /* String body = "Your request is created successfully with reference code: " + requests.getRequestCode();*/
@@ -1734,7 +1736,7 @@ public class RequestController extends MessageController {
         }
        /* model.put("firstName", firstName + " " + lastName);*/
         model.put("firstName",  mailDTO.getHeader()+" " +firstName + " " + lastName);
-        model.put("body1", body);
+        model.put("body1", body);    
         model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
