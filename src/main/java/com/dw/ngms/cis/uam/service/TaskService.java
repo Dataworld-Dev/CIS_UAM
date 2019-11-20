@@ -236,6 +236,8 @@ public class TaskService {
 		additionalInfo.setSequenceRequest(requests.getSequenceRequest());
 		additionalInfo.setRequestCode(requests.getRequestCode());
 		additionalInfo.setInternalCapturer(requests.isInternalCapturer());
+		if(!StringUtils.isEmpty(requests.getDescription()))
+			additionalInfo.setTargetDescription(requests.getDescription());
 		if(additionalInfo.isInternalCapturer() && 
 				!StringUtils.isEmpty(requests.getAssigneeInfoManager())) {
 			additionalInfo.getAssigneeList().add(new Assignee("User", requests.getAssigneeInfoManager()));
