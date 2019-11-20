@@ -1,6 +1,8 @@
 package com.dw.ngms.cis.uam.controller;
 
 import com.dw.ngms.cis.controller.MessageController;
+import com.dw.ngms.cis.im.entity.EmailTemplate;
+import com.dw.ngms.cis.im.service.EmailTemplateService;
 import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
 
 import com.dw.ngms.cis.uam.dto.*;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,6 +49,9 @@ public class UserController extends MessageController {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private EmailTemplateService email;
 
 
     @Autowired
@@ -541,15 +547,49 @@ public class UserController extends MessageController {
 
             MailDTO mailDTO = new MailDTO();
 
+            EmailTemplate template = this.email.getEmailTemplateById(17);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+
+            MailDTO mailDTO1 = new MailDTO();
+
+            EmailTemplate template1 = this.email.getEmailTemplateById(18);
+            mailDTO1.setBody1(template1.getBody());
+            mailDTO1.setSubject(template1.getSubject());
+            mailDTO1.setFooter(template1.getFooter());
+            mailDTO1.setHeader(template1.getHeader());
+
+
+
+            MailDTO mailDTO2 = new MailDTO();
+
+            EmailTemplate template2 = this.email.getEmailTemplateById(21);
+            mailDTO2.setBody1(template2.getBody());
+            mailDTO2.setSubject(template2.getSubject());
+            mailDTO2.setFooter(template2.getFooter());
+            mailDTO2.setHeader(template2.getHeader());
+
+
+            MailDTO mailDTO3 = new MailDTO();
+            EmailTemplate template3 = this.email.getEmailTemplateById(23);
+            mailDTO3.setBody1(template3.getBody());
+            mailDTO3.setSubject(template3.getSubject());
+            mailDTO3.setFooter(template3.getFooter());
+            mailDTO3.setHeader(template3.getHeader());
+
+
             // inside your getSalesUserData() method
             ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
             emailExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        sendMailToUser(user, mailDTO);
-                        sendMailToAdmin(user, mailDTO);
-                        sendMailToProvinceAdmin(user, mailDTO);
+                        sendMailToUser(user, mailDTO,mailDTO1);
+                        sendMailToAdmin(user, mailDTO2);
+                        sendMailToProvinceAdmin(user, mailDTO3);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -644,15 +684,47 @@ public class UserController extends MessageController {
 
             MailDTO mailDTO = new MailDTO();
 
+            EmailTemplate template = this.email.getEmailTemplateById(19);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+
+            MailDTO mailDTO1 = new MailDTO();
+
+            EmailTemplate template1 = this.email.getEmailTemplateById(20);
+            mailDTO1.setBody1(template1.getBody());
+            mailDTO1.setSubject(template1.getSubject());
+            mailDTO1.setFooter(template1.getFooter());
+            mailDTO1.setHeader(template1.getHeader());
+
+            MailDTO mailDTO2 = new MailDTO();
+
+            EmailTemplate template2 = this.email.getEmailTemplateById(22);
+            mailDTO2.setBody1(template2.getBody());
+            mailDTO2.setSubject(template2.getSubject());
+            mailDTO2.setFooter(template2.getFooter());
+            mailDTO2.setHeader(template2.getHeader());
+
+
+            MailDTO mailDTO3 = new MailDTO();
+            EmailTemplate template3 = this.email.getEmailTemplateById(24);
+            mailDTO3.setBody1(template3.getBody());
+            mailDTO3.setSubject(template3.getSubject());
+            mailDTO3.setFooter(template3.getFooter());
+            mailDTO3.setHeader(template3.getHeader());
+
+
             // inside your getSalesUserData() method
             ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
             emailExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        sendMailToInternalUser(internalUser, mailDTO);
-                        sendMailToInternalAdmin(internalUser, mailDTO);
-                        sendMailToProvinceInternalAdmin(internalUser, mailDTO);
+                        sendMailToInternalUser(internalUser, mailDTO, mailDTO1);
+                        sendMailToInternalAdmin(internalUser, mailDTO2);
+                        sendMailToProvinceInternalAdmin(internalUser, mailDTO3);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -717,7 +789,8 @@ public class UserController extends MessageController {
             }
             this.userService.updateUserApproval(user);
             MailDTO mailDTO = new MailDTO();
-            sendMailToUser(user, mailDTO);
+            MailDTO mailDTO1 = new MailDTO();
+            sendMailToUser(user, mailDTO,mailDTO1);
             //todo Send Email to User
             return ResponseEntity.status(HttpStatus.OK).body("User Approval Updated Successfully");
         } catch (Exception exception) {
@@ -842,15 +915,24 @@ public class UserController extends MessageController {
         try {
             Map<String, Object> model = new HashMap<String, Object>();
             MailDTO mailDTO = new MailDTO();
-            mailDTO.setMailSubject("User password updated");
 
-            model.put("body1", "Your password is updated Successfully");
+            EmailTemplate template = this.email.getEmailTemplateById(16);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+            /*mailDTO.setMailSubject("User password updated");*/
+          /*  model.put("body1", "Your password is updated Successfully");*/
+            model.put("body1",mailDTO.getBody1());
             //model.put("body2", "Your password is " + user.getPassword());
             model.put("body2", "");
             model.put("body3", "");
             model.put("body4", "");
-            model.put("firstName", user.getFirstName() + ",");
-            model.put("FOOTER", "CIS ADMIN");
+            /*model.put("firstName", user.getFirstName() + ",");*/
+            model.put("firstName", mailDTO.getHeader()+" " +user.getFirstName() + ",");
+            mailDTO.setMailSubject(mailDTO.getSubject());
+            model.put("FOOTER", mailDTO.getFooter());
             mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
             mailDTO.setMailTo(user.getEmail());
             mailDTO.setModel(model);
@@ -923,29 +1005,52 @@ public class UserController extends MessageController {
     }
 
 
-    private void sendMailToUser(@RequestBody @Valid User user, MailDTO mailDTO) throws Exception {
+    private void sendMailToUser(@RequestBody @Valid User user, MailDTO mailDTO, MailDTO mailDTO1) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
 
+
         if (user.getIsApproved().getDisplayString().equalsIgnoreCase("YES")) {
-            model.put("firstName", user.getFirstName() + " " +user.getSurname());
-            model.put("body1", "Thank you for registering with us. Your account is approved.");
-            model.put("body2", "Your password is " + user.getPassword());
+
+            String body = mailDTO.getBody1();
+            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+            m1.put("data", body);
+            String bodyText = MessageFormat.format(m1.get("data"),user.getPassword());
+
+            /*model.put("firstName", user.getFirstName() + " " +user.getSurname());*/
+
+            model.put("firstName",  mailDTO.getHeader()+" " +user.getFirstName() + " " +user.getSurname());
+
+            /*model.put("body1", "Thank you for registering with us. Your account is approved.");*/
+            model.put("body1", bodyText);
+           /* model.put("body2", "Your password is " + user.getPassword());*/
+            model.put("body2", "");
             model.put("body3", "");
             model.put("body4", "");
 
         } else {
 
-            model.put("firstName", user.getFirstName() + " " +user.getSurname());
-            model.put("body1", "Thank you for registering with us. Your account is pending approval.");
-            model.put("body2", "Your password is " + user.getPassword());
+            String body = mailDTO1.getBody1();
+            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+            m1.put("data", body);
+            String bodyText = MessageFormat.format(m1.get("data"),user.getPassword());
+            /*model.put("firstName", user.getFirstName() + " " +user.getSurname());*/
+            model.put("firstName",  mailDTO.getHeader()+" " +user.getFirstName() + " " +user.getSurname());
+           /* model.put("body1", "Thank you for registering with us. Your account is pending approval.");*/
+            model.put("body1", bodyText);
+           /* model.put("body2", "Your password is " + user.getPassword());*/
+            model.put("body2", "");
             model.put("body3", "");
             model.put("body4", "");
 
         }
 
-        mailDTO.setMailSubject("Welcome to CIS");
-        model.put("FOOTER", "CIS ADMIN");
+     /*   mailDTO.setMailSubject("Welcome to CIS");
+        model.put("FOOTER", "CIS ADMIN");*/
+
+        mailDTO.setMailSubject(mailDTO.getSubject());
+        model.put("FOOTER", mailDTO.getFooter());
+
         //mailDTO.setFooter("CIS ADMIN");
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(user.getEmail());
@@ -991,15 +1096,30 @@ public class UserController extends MessageController {
     }
 
 
-    private void sendMailToInternalUser(@RequestBody @Valid User user, MailDTO mailDTO) throws Exception {
+    private void sendMailToInternalUser(@RequestBody @Valid User user, MailDTO mailDTO, MailDTO mailDTO1) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         if (user.getIsApproved().getDisplayString().equalsIgnoreCase("YES")) {
-            model.put("body1", "Thank you for registering with us. Your account is approved.");
+
+            String body = mailDTO.getBody1();
+            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+            m1.put("data", body);
+            String bodyText = MessageFormat.format(m1.get("data"),user.getPassword());
+
+            /*model.put("body1", "Thank you for registering with us. Your account is approved.");*/
+            model.put("body1", bodyText);
             model.put("body2", "");
             model.put("body3", "");
             model.put("body4", "");
         } else {
-            model.put("body1", "Thank you for registering with us. Your account is pending approval.");
+
+            String body = mailDTO1.getBody1();
+            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+            m1.put("data", body);
+            String bodyText = MessageFormat.format(m1.get("data"),user.getPassword());
+
+
+           /* model.put("body1", "Thank you for registering with us. Your account is pending approval.");*/
+            model.put("body1", bodyText);
             model.put("body2", "");
             model.put("body3", "");
             model.put("body4", "");
@@ -1007,9 +1127,10 @@ public class UserController extends MessageController {
 
 
 
-        mailDTO.setMailSubject("Welcome to CIS");
-        model.put("firstName", " " + user.getFirstName() + " " +user.getSurname() + ",");
-        model.put("FOOTER", "CIS ADMIN");
+        mailDTO.setMailSubject(mailDTO.getSubject());
+        /*model.put("firstName", " " + user.getFirstName() + " " +user.getSurname() + ",");*/
+        model.put("firstName",  mailDTO.getHeader()+" " +user.getFirstName() + " " +user.getSurname() + ",");
+        model.put("FOOTER", mailDTO.getFooter());
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(user.getEmail());
         mailDTO.setModel(model);
@@ -1020,11 +1141,28 @@ public class UserController extends MessageController {
     private void sendMailToAdmin(@RequestBody @Valid User user, MailDTO mailDTO) throws Exception {
 
         Map<String, Object> model = new HashMap<String, Object>();
-        mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");
-        model.put("firstName", " " + "Admin Name" + ",");
-        model.put("FOOTER", "CIS ADMIN");
-        model.put("body1", "New user registered with email " + user.getEmail() + " in province " + user.getExternalUserRoles().get(0).getUserProvinceName());
-        model.put("body2", "New task created for approval by provincial administrator");
+
+        String subject = mailDTO.getMailSubject();
+        java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+        m1.put("subject", subject);
+        String subjectText = MessageFormat.format(m1.get("subject"),user.getUserTypeName().toLowerCase());
+
+        String body = mailDTO.getBody1();
+        java.util.Map<String, String> m2 = new java.util.HashMap<String, String>();
+        m2.put("body", body);
+        String bodyText = MessageFormat.format(m2.get("body"),user.getEmail(),user.getExternalUserRoles().get(0).getUserProvinceName());
+
+
+
+        /*mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");*/
+        mailDTO.setMailSubject(subjectText);
+       /* model.put("firstName", " " + "Admin Name" + ",");*/
+        model.put("firstName",  mailDTO.getHeader()+" ");
+        model.put("FOOTER", mailDTO.getFooter());
+       /* model.put("body1", "New user registered with email " + user.getEmail() + " in province " + user.getExternalUserRoles().get(0).getUserProvinceName());*/
+        model.put("body1", bodyText);
+       /* model.put("body2", "New task created for approval by provincial administrator");*/
+        model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
@@ -1036,12 +1174,33 @@ public class UserController extends MessageController {
 
     private void sendMailToInternalAdmin(@RequestBody @Valid User user, MailDTO mailDTO) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
-        mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");
-        model.put("firstName", " " + "Admin Name" + ",");
-        model.put("FOOTER", "CIS ADMIN");
+        /*mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");*/
+
+        String subject = mailDTO.getMailSubject();
+        java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+        m1.put("subject", subject);
+        String subjectText = MessageFormat.format(m1.get("subject"),user.getUserTypeName().toLowerCase());
+        mailDTO.setMailSubject(subjectText);
+
+
+        String body = mailDTO.getBody1();
+        java.util.Map<String, String> m2 = new java.util.HashMap<String, String>();
+        m2.put("body", body);
+        String bodyText = MessageFormat.format(m2.get("body"),user.getEmail(),user.getInternalUserRoles().get(0).getProvinceName());
+
+
+
+
+       /* model.put("firstName", " " + "Admin Name" + ",");*/
+        model.put("firstName",  mailDTO.getHeader()+" ");
+
+        model.put("FOOTER",mailDTO.getFooter());
         // mailDTO.setBody1("New user registered with email " +user.getEmail()+  " in province "+user.getInternalUserRoles().get(0).getProvinceName());
-        model.put("body1", "New user registered with email " + user.getEmail());
-        model.put("body2", "New task created for approval by provincial administrator");
+        /*model.put("body1", "New user registered with email " + user.getEmail());
+        model.put("body2", "New task created for approval by provincial administrator");*/
+
+        model.put("body1", bodyText);
+        model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
@@ -1053,12 +1212,30 @@ public class UserController extends MessageController {
 
     private void sendMailToProvinceAdmin(@RequestBody @Valid User user, MailDTO mailDTO) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
-        mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");
-        model.put("firstName", " " + "Province Administrator" + ",");
-        model.put("FOOTER", "CIS ADMIN");
 
-        model.put("body1", "New user registered with email " + user.getEmail() + " in province " + user.getExternalUserRoles().get(0).getUserProvinceName());
-        model.put("body2", "New task created for approval by you");
+
+       /* mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");*/
+        String subject = mailDTO.getMailSubject();
+        java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+        m1.put("subject", subject);
+        String subjectText = MessageFormat.format(m1.get("subject"),user.getUserTypeName().toLowerCase());
+        mailDTO.setMailSubject(subjectText);
+
+        /*model.put("firstName", " " + "Province Administrator" + ",");*/
+        model.put("firstName",  mailDTO.getHeader()+" ");
+
+        model.put("FOOTER", mailDTO.getFooter());
+
+        String body = mailDTO.getBody1();
+        java.util.Map<String, String> m2 = new java.util.HashMap<String, String>();
+        m2.put("body", body);
+        String bodyText = MessageFormat.format(m2.get("body"),user.getEmail(),user.getExternalUserRoles().get(0).getUserProvinceName());
+
+
+       /* model.put("body1", "New user registered with email " + user.getEmail() + " in province " + user.getExternalUserRoles().get(0).getUserProvinceName());*/
+        model.put("body1", bodyText);
+       /* model.put("body2", "New task created for approval by you");*/
+        model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
 
@@ -1070,13 +1247,33 @@ public class UserController extends MessageController {
 
     private void sendMailToProvinceInternalAdmin(@RequestBody @Valid User user, MailDTO mailDTO) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
-        mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");
-        model.put("firstName", " " + "Province Administrator" + ",");
-        model.put("FOOTER", "CIS ADMIN");
+
+
+       /* mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");*/
+
+        String subject = mailDTO.getMailSubject();
+        java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+        m1.put("subject", subject);
+        String subjectText = MessageFormat.format(m1.get("subject"),user.getUserTypeName().toLowerCase());
+        mailDTO.setMailSubject(subjectText);
+
+        String body = mailDTO.getBody1();
+        java.util.Map<String, String> m2 = new java.util.HashMap<String, String>();
+        m2.put("body", body);
+        String bodyText = MessageFormat.format(m2.get("body"),user.getEmail());
+
+
+
+       /* model.put("firstName", " " + "Province Administrator" + ",");*/
+        model.put("firstName",  mailDTO.getHeader()+" ");
+
+        model.put("FOOTER", mailDTO.getFooter());
         //mailDTO.setBody1("New user registered with email " +user.getEmail()+  " in province " +user.getInternalUserRoles().get(0).getProvinceName());
 
-        model.put("body1", "New user registered with email " + user.getEmail());
-        model.put("body2", "New task created for approval by you");
+       /* model.put("body1", "New user registered with email " + user.getEmail());*/
+        model.put("body1", bodyText);
+       /* model.put("body2", "New task created for approval by you");*/
+        model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
 

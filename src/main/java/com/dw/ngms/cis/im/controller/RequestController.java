@@ -15,6 +15,7 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -520,6 +521,15 @@ public class RequestController extends MessageController {
             requests.setRequestTypeName(requests.getRequestTypeName());
             Requests requestToSave = this.requestService.saveRequest(requests);
             MailDTO mailDTO = new MailDTO();
+
+
+            EmailTemplate template = this.email.getEmailTemplateById(7);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+
             ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
             emailExecutor.execute(new Runnable() {
                 @Override
@@ -699,7 +709,7 @@ public class RequestController extends MessageController {
             firstName = user.getFirstName();
             lastName = user.getSurname();
         }
-        model.put("firstName", mailDTO.getHeader()+"" +firstName + " " + lastName);
+        model.put("firstName", mailDTO.getHeader()+" " +firstName + " " + lastName);
        // model.put("body1", "Invoice Generated Successfully");
         model.put("body1", mailDTO.getBody1());
         model.put("body2", "");
@@ -726,14 +736,18 @@ public class RequestController extends MessageController {
             firstName = user.getFirstName();
             lastName = user.getSurname();
         }
-        model.put("firstName", firstName + " " + lastName);
-        model.put("body1", "FTP paths send successfully");
+        /*model.put("firstName", firstName + " " + lastName);*/
+        model.put("firstName", mailDTO.getHeader()+" " +firstName + " " + lastName);
+        /*model.put("body1", FTP paths send successfully);*/
+        model.put("body1", mailDTO.getBody1());
         model.put("body2", ftpFilePath);
         model.put("body3", "");
         model.put("body4", "");
 
-        mailDTO.setMailSubject("DRDLR:Delivery");
-        model.put("FOOTER", "CIS ADMIN");
+        /*mailDTO.setMailSubject("DRDLR:Delivery");*/
+        mailDTO.setMailSubject(mailDTO.getSubject());
+        /*model.put("FOOTER", "CIS ADMIN");*/
+        model.put("FOOTER", mailDTO.getFooter());
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(requests.getUserName());
         mailDTO.setModel(model);
@@ -751,14 +765,20 @@ public class RequestController extends MessageController {
             firstName = user.getFirstName();
             lastName = user.getSurname();
         }
-        model.put("firstName", firstName + " " + lastName);
-        model.put("body1", "Request Attached");
+       /* model.put("firstName", firstName + " " + lastName);*/
+        model.put("firstName", mailDTO.getHeader()+" " +firstName + " " + lastName);
+       /* model.put("body1", "Request Attached");*/
+        model.put("body1", mailDTO.getBody1());
         model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
 
-        mailDTO.setMailSubject("DRDLR:Delivery");
-        model.put("FOOTER", "CIS ADMIN");
+       /* mailDTO.setMailSubject("DRDLR:Delivery");*/
+        mailDTO.setMailSubject(mailDTO.getSubject());
+
+        /*model.put("FOOTER", "CIS ADMIN");*/
+        model.put("FOOTER", mailDTO.getFooter());
+
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(requests.getUserName());
         mailDTO.setModel(model);
@@ -778,14 +798,20 @@ public class RequestController extends MessageController {
             firstName = user.getFirstName();
             lastName = user.getSurname();
         }
-        model.put("firstName", firstName + " " + lastName);
-        model.put("body1", "Your request is ready for collection");
+       /* model.put("firstName", firstName + " " + lastName);*/
+        model.put("firstName", mailDTO.getHeader()+" " +firstName + " " + lastName);
+       /* model.put("body1", "Your request is ready for collection");*/
+        model.put("body1", mailDTO.getBody1());
         model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
 
-        mailDTO.setMailSubject("DRDLR:Delivery");
-        model.put("FOOTER", "CIS ADMIN");
+       /* mailDTO.setMailSubject("DRDLR:Delivery");*/
+        mailDTO.setMailSubject(mailDTO.getSubject());
+
+        /*model.put("FOOTER", "CIS ADMIN");*/
+        model.put("FOOTER", mailDTO.getFooter());
+
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(requests.getUserName());
         mailDTO.setModel(model);
@@ -1027,6 +1053,12 @@ public class RequestController extends MessageController {
                         String zipFilename = "FTPFilesDownload" + "_" + timeStamp + ".zip";
                         File firstLocalFile = new File(applicationPropertiesConfiguration.getUploadDirectoryPathFTP() + zipFilename);
                         MailDTO mailDTO = new MailDTO();
+                        EmailTemplate template = this.email.getEmailTemplateById(3);
+                        mailDTO.setBody1(template.getBody());
+                        mailDTO.setSubject(template.getSubject());
+                        mailDTO.setFooter(template.getFooter());
+                        mailDTO.setHeader(template.getHeader());
+
 
                         ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
                         emailExecutor.execute(new Runnable() {
@@ -1103,6 +1135,12 @@ public class RequestController extends MessageController {
                             System.out.println("FTP  Password is: " + appPropertiesService.getProperty("FTP_PASSWORD").getKeyValue());
                             MailDTO mailDTO = new MailDTO();
 
+                            EmailTemplate template = this.email.getEmailTemplateById(2);
+                            mailDTO.setBody1(template.getBody());
+                            mailDTO.setSubject(template.getSubject());
+                            mailDTO.setFooter(template.getFooter());
+                            mailDTO.setHeader(template.getHeader());
+
                             // inside your getSalesUserData() method
                             ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
                             emailExecutor.execute(new Runnable() {
@@ -1124,6 +1162,11 @@ public class RequestController extends MessageController {
                 } else {
                     System.out.println("This is manual delivery for collection");
                     MailDTO mailDTO = new MailDTO();
+                EmailTemplate template = this.email.getEmailTemplateById(4);
+                mailDTO.setBody1(template.getBody());
+                mailDTO.setSubject(template.getSubject());
+                mailDTO.setFooter(template.getFooter());
+                mailDTO.setHeader(template.getHeader());
                     ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
                     emailExecutor.execute(new Runnable() {
                         @Override
@@ -1564,11 +1607,29 @@ public class RequestController extends MessageController {
                 log.error("Could not find invoice generated user email, No payment confirmation mail sent");
                 return ;
             }
+
+
             String userFullName = (user != null) ? user.getFirstName() + " " + user.getSurname() : "";
-            String subject = "Cancellation notification";
-            String body = "Cancellation processed successfully, reference code: " + requests.getRequestCode();            
-                       
-            sendMail(requests, new MailDTO(), userFullName, subject, body, email);
+           /* String subject = "Cancellation notification";
+            String body = "Cancellation processed successfully, reference code: " + requests.getRequestCode();  */
+
+            MailDTO mailDTO = new MailDTO();
+            EmailTemplate template = this.email.getEmailTemplateById(5);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+            String subject = mailDTO.getMailSubject();
+
+
+            String body = mailDTO.getBody1();
+            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+            m1.put("data", body);
+            String bodyText = MessageFormat.format(m1.get("data"),requests.getRequestCode());
+
+
+            sendMail(requests, mailDTO, userFullName, subject, bodyText, email);
         } catch (Exception e) {
             log.error("Failed to send cancellation notification, " + e.getMessage());
         }
@@ -1589,10 +1650,27 @@ public class RequestController extends MessageController {
                 user = this.userService.findByUserCode(requests.getUserCode());                
             }
             String userFullName = (user != null) ? user.getFirstName() + " " + user.getSurname() : "";
-            String subject = "Upload user payment confirmation";
-            String body = "Upload user payment confirmation processed successfully, reference code: " + requests.getRequestCode();            
-                       
-            sendMail(requests, new MailDTO(), userFullName, subject, body, email);
+
+            MailDTO mailDTO = new MailDTO();
+
+            EmailTemplate template = this.email.getEmailTemplateById(6);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+           /* String subject = "Upload user payment confirmation";
+            String body = "Upload user payment confirmation processed successfully, reference code: " + requests.getRequestCode();   */
+
+            String subject = mailDTO.getSubject();
+
+            String body = mailDTO.getBody1();
+            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+            m1.put("data", body);
+            String bodyText = MessageFormat.format(m1.get("data"),requests.getRequestCode());
+
+
+            sendMail(requests, new MailDTO(), userFullName, subject, bodyText, email);
         } catch (Exception e) {
             log.error("Failed to send upload user payment confirmation notification, " + e.getMessage());
         }
@@ -1627,10 +1705,22 @@ public class RequestController extends MessageController {
             User user = this.userService.findByUserCode(requests.getUserCode());
             userName = (user != null) ? user.getFirstName() + " " + user.getSurname() : "Test User";
         }
-        String subject = "Request Created";
-        String body = "Your request is created successfully with reference code: " + requests.getRequestCode();
 
-        sendMail(requests, mailDTO, userName, subject, body, requests.getEmail());
+
+        /*String subject = "Request Created";*/
+        String subject = mailDTO.getMailSubject();
+
+
+       /* String body = "Your request is created successfully with reference code: " + requests.getRequestCode();*/
+
+        String body = mailDTO.getBody1();
+        java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+        m1.put("data", body);
+        String bodyText = MessageFormat.format(m1.get("data"),requests.getRequestCode());
+
+        String bodyOutline = bodyText;
+
+        sendMail(requests, mailDTO, userName, subject, bodyOutline, requests.getEmail());
     }//sendMailToCreateRequestUser
 
     private void sendMail(Requests requests, MailDTO mailDTO, String userName, String subject, String body, String email) throws Exception {
@@ -1642,13 +1732,14 @@ public class RequestController extends MessageController {
             firstName = user.getFirstName();
             lastName = user.getSurname();
         }
-        model.put("firstName", firstName + " " + lastName);
+       /* model.put("firstName", firstName + " " + lastName);*/
+        model.put("firstName",  mailDTO.getHeader()+" " +firstName + " " + lastName);
         model.put("body1", body);
         model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
         mailDTO.setMailSubject(subject);
-        model.put("FOOTER", "CIS ADMIN");
+        model.put("FOOTER", mailDTO.getFooter());
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(email);
         mailDTO.setModel(model);
@@ -1717,14 +1808,26 @@ public class RequestController extends MessageController {
 	private void sendMailWithPOPAttachment(String emailAddress, String fileName, File file) throws Exception {
 		Map<String, Object> model = new HashMap<String, Object>();
 		MailDTO mailDTO = new MailDTO();
-		model.put("firstName", "Cashier,");
-		model.put("body1", "Please verify the payment based on the attachment.");
+        EmailTemplate template = this.email.getEmailTemplateById(8);
+        mailDTO.setBody1(template.getBody());
+        mailDTO.setSubject(template.getSubject());
+        mailDTO.setFooter(template.getFooter());
+        mailDTO.setHeader(template.getHeader());
+
+		/*model.put("firstName", "Cashier,");*/
+        model.put("firstName", mailDTO.getHeader()+" " + "Cashier,");
+		/*model.put("body1", "Please verify the payment based on the attachment.");*/
+        model.put("body1", mailDTO.getBody1());
 		model.put("body2", "");
 		model.put("body3", "");
 		model.put("body4", "");
 
-		mailDTO.setMailSubject("Payment Verification");
-		model.put("FOOTER", "CIS ADMIN");
+		/*mailDTO.setMailSubject("Payment Verification");*/
+        mailDTO.setMailSubject(mailDTO.getSubject());
+
+		/*model.put("FOOTER", "CIS ADMIN");*/
+        model.put("FOOTER", mailDTO.getFooter());
+
 		mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
 		mailDTO.setMailTo(emailAddress);
 		mailDTO.setModel(model);

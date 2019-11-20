@@ -2,6 +2,8 @@ package com.dw.ngms.cis.uam.controller;
 
 import com.dw.ngms.cis.controller.MessageController;
 import com.dw.ngms.cis.exception.ExceptionConstants;
+import com.dw.ngms.cis.im.entity.EmailTemplate;
+import com.dw.ngms.cis.im.service.EmailTemplateService;
 import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
 import com.dw.ngms.cis.uam.dto.MailDTO;
 import com.dw.ngms.cis.uam.entity.IssueLog;
@@ -34,6 +36,9 @@ public class IssueLogController extends MessageController {
 
     @Autowired
     private IssueLogService issueLogService;
+
+    @Autowired
+    private EmailTemplateService email;
 
 
     @Autowired
@@ -113,8 +118,22 @@ public class IssueLogController extends MessageController {
                 issueLog.setResolvedComments(issueLogDetails.getResolvedComments());
             }
             IssueLog updateIssueLog = this.issueLogService.saveIssueLog(issueLog);
+
             MailDTO mailDTO = new MailDTO();
-            sendMailToUser(updateIssueLog, mailDTO);
+            EmailTemplate template = this.email.getEmailTemplateById(12);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+            MailDTO mailDTO1 = new MailDTO();
+            EmailTemplate template1 = this.email.getEmailTemplateById(13);
+            mailDTO1.setBody1(template1.getBody());
+            mailDTO1.setSubject(template1.getSubject());
+            mailDTO1.setFooter(template1.getFooter());
+            mailDTO1.setHeader(template1.getHeader());
+
+            sendMailToUser(updateIssueLog, mailDTO, mailDTO1);
             return ResponseEntity.status(HttpStatus.OK).body(updateIssueLog);
         }else{
             return generateEmptyWithOKResponse(request, "No Issue log found");
@@ -125,25 +144,27 @@ public class IssueLogController extends MessageController {
 
 
 
-    private void sendMailToUser(@RequestBody @Valid IssueLog issueLog, MailDTO mailDTO) throws IOException {
+    private void sendMailToUser(@RequestBody @Valid IssueLog issueLog, MailDTO mailDTO,MailDTO mailDTO1 ) throws IOException {
         Map<String, Object> model = new HashMap<String, Object>();
         if (issueLog.getIssueStatus().equalsIgnoreCase("OPEN")) {
 
-            model.put("body1", "Your issue is open.");
+            model.put("body1", mailDTO.getBody1());
             model.put("body2", "");
             model.put("body3", "");
             model.put("body4", "");
 
         } else  if (issueLog.getIssueStatus().equalsIgnoreCase("CLOSE"))  {
-            model.put("body1", "Your issue is closed.");
+            model.put("body1", mailDTO1.getBody1());
             model.put("body2", "");
             model.put("body3", "");
             model.put("body4", "");
 
         }
-        mailDTO.setSubject("Welcome to CIS");
-        model.put("firstName", issueLog.getFullName());
-        model.put("FOOTER", "CIS ADMIN");
+        mailDTO.setMailSubject(mailDTO.getSubject());
+        /*model.put("firstName", issueLog.getFullName());*/
+        model.put("firstName", mailDTO.getHeader()+" " +issueLog.getFullName());
+      /*  model.put("FOOTER", "CIS ADMIN");*/
+        model.put("FOOTER", mailDTO.getFooter());
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(issueLog.getEmail());
         mailDTO.setModel(model);

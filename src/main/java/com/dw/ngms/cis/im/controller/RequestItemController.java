@@ -2,11 +2,9 @@ package com.dw.ngms.cis.im.controller;
 
 import com.dw.ngms.cis.controller.MessageController;
 import com.dw.ngms.cis.im.dto.RequestItemsDTO;
-import com.dw.ngms.cis.im.entity.RequestItems;
-import com.dw.ngms.cis.im.entity.RequestKinds;
-import com.dw.ngms.cis.im.entity.RequestTypes;
-import com.dw.ngms.cis.im.entity.Requests;
+import com.dw.ngms.cis.im.entity.*;
 import com.dw.ngms.cis.im.service.ApplicationPropertiesService;
+import com.dw.ngms.cis.im.service.EmailTemplateService;
 import com.dw.ngms.cis.im.service.RequestItemService;
 import com.dw.ngms.cis.im.service.RequestService;
 import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
@@ -67,6 +65,8 @@ public class RequestItemController extends MessageController {
     @Autowired
     private ApplicationPropertiesConfiguration applicationPropertiesConfiguration;
 
+    @Autowired
+    private EmailTemplateService email;
 
     @Autowired
     private UserService userService;
@@ -209,6 +209,12 @@ public class RequestItemController extends MessageController {
                     System.out.println("File Path is: " + ftpFilePath);
 
                     MailDTO mailDTO = new MailDTO();
+                    EmailTemplate template = this.email.getEmailTemplateById(10);
+                    mailDTO.setBody1(template.getBody());
+                    mailDTO.setSubject(template.getSubject());
+                    mailDTO.setFooter(template.getFooter());
+                    mailDTO.setHeader(template.getHeader());
+
 
                     // inside your getSalesUserData() method
                     Requests requests = this.requestsService.getRequestsByRequestCode(requestItems.getRequestCode());
@@ -301,6 +307,12 @@ public class RequestItemController extends MessageController {
                     File firstLocalFile = new File(applicationPropertiesConfiguration.getRequestDirectoryFtpPath() + zipFilename);
 
                     MailDTO mailDTO = new MailDTO();
+                    EmailTemplate template = this.email.getEmailTemplateById(9);
+                    mailDTO.setBody1(template.getBody());
+                    mailDTO.setSubject(template.getSubject());
+                    mailDTO.setFooter(template.getFooter());
+                    mailDTO.setHeader(template.getHeader());
+
                     ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
                     emailExecutor.execute(new Runnable() {
                         @Override
@@ -340,14 +352,19 @@ public class RequestItemController extends MessageController {
             firstName = user.getFirstName();
             lastName = user.getSurname();
         }
-        model.put("firstName", firstName + " " + lastName);
-        model.put("body1", "Request Attached");
+       /* model.put("firstName", firstName + " " + lastName);*/
+        model.put("firstName", mailDTO.getHeader()+" " +firstName + " " + lastName);
+
+  /*      model.put("body1", "Request Attached");*/
+        model.put("body1", mailDTO.getBody1());
         model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
 
-        mailDTO.setMailSubject("DRDLR:Delivery");
-        model.put("FOOTER", "CIS ADMIN");
+        /*mailDTO.setMailSubject("DRDLR:Delivery");*/
+       /* model.put("FOOTER", "CIS ADMIN");*/
+        mailDTO.setMailSubject(mailDTO.getSubject());
+        model.put("FOOTER", mailDTO.getFooter());
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(requests.getUserName());
         mailDTO.setModel(model);
@@ -369,14 +386,20 @@ public class RequestItemController extends MessageController {
             firstName = user.getFirstName();
             lastName = user.getSurname();
         }
-        model.put("firstName", firstName + " " + lastName);
-        model.put("body1", "FTP paths send successfully");
+       /* model.put("firstName", firstName + " " + lastName);*/
+        model.put("firstName", mailDTO.getHeader()+" " +firstName + " " + lastName);
+       /* model.put("body1", "FTP paths send successfully");*/
+        model.put("body1", mailDTO.getBody1());
         model.put("body2", ftpFilePath);
         model.put("body3", "");
         model.put("body4", "");
 
-        mailDTO.setMailSubject("DRDLR:Delivery");
-        model.put("FOOTER", "CIS ADMIN");
+       /* mailDTO.setMailSubject("DRDLR:Delivery");
+        model.put("FOOTER", "CIS ADMIN");*/
+
+        mailDTO.setMailSubject(mailDTO.getSubject());
+        model.put("FOOTER", mailDTO.getFooter());
+
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(requests.getEmail());
         mailDTO.setModel(model);

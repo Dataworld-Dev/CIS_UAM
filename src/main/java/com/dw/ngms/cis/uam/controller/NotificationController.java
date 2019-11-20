@@ -1,8 +1,10 @@
 package com.dw.ngms.cis.uam.controller;
 
 import com.dw.ngms.cis.controller.MessageController;
+import com.dw.ngms.cis.im.entity.EmailTemplate;
 import com.dw.ngms.cis.im.entity.Requests;
 import com.dw.ngms.cis.im.service.ApplicationPropertiesService;
+import com.dw.ngms.cis.im.service.EmailTemplateService;
 import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
 import com.dw.ngms.cis.uam.dto.FilePathsDTO;
 import com.dw.ngms.cis.uam.dto.MailDTO;
@@ -64,6 +66,9 @@ public class NotificationController extends MessageController {
     private NotificationSubTypesService notificationSubTypes;
 
     @Autowired
+    private EmailTemplateService email;
+
+    @Autowired
     private ApplicationPropertiesConfiguration applicationPropertiesConfiguration;
 
     @Autowired
@@ -96,6 +101,13 @@ public class NotificationController extends MessageController {
         try {
             Notifications notificationSave = this.notificationService.saveNotification(notification);
             MailDTO mailDTO = new MailDTO();
+
+            EmailTemplate template = this.email.getEmailTemplateById(14);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
             sendMailToCreateNotificationUser(notificationSave, mailDTO);
             return ResponseEntity.status(HttpStatus.OK).body(notificationSave);
         } catch (Exception exception) {
@@ -116,13 +128,18 @@ public class NotificationController extends MessageController {
             userName = "Notification User";
         }
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("firstName", userName);
-        model.put("body1", "Your Notification is created successfully");
+       /* model.put("firstName", userName);*/
+        model.put("firstName",  mailDTO.getHeader()+" " +userName);
+       /* model.put("body1", "Your Notification is created successfully");*/
+        model.put("body1", mailDTO.getBody1());
+
         model.put("body2", "");
         model.put("body3", "");
         model.put("body4", "");
-        mailDTO.setMailSubject("Create Notification");
-        model.put("FOOTER", "CIS ADMIN");
+        /*mailDTO.setMailSubject("Create Notification");
+        model.put("FOOTER", "CIS ADMIN");*/
+        mailDTO.setMailSubject(mailDTO.getSubject());
+        model.put("FOOTER", mailDTO.getFooter());
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(notifications.getCreatedByUserName());
         mailDTO.setModel(model);
