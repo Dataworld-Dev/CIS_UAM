@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_Letter_Landscape" pageWidth="1191" pageHeight="842" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="1151" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8a465670-cc4a-4270-965f-8efb86e33b71">
 	<property name="template.engine" value="tabular_template"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CISDS"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CISDW"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -82,7 +82,7 @@
 	</style>
 	<subDataset name="UserLogDataset" whenResourceMissingType="Empty" uuid="a2f86ff2-4f21-4606-a667-add255c355f6">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CISDS"/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CISDW"/>
 		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="248"/>
 		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="745"/>
 		<parameter name="tFromDate" class="java.util.Date"/>
@@ -90,10 +90,10 @@
 		<parameter name="tUserType" class="java.lang.String"/>
 		<queryString language="SQL">
 			<![CDATA[SELECT DISTINCT AE.REQUESTDATETIME, AE.USERCODE, AE.USERNAME, U.USERTYPENAME, AE.OPERATION FROM AUDITENTRY AE 
-INNER JOIN USERS U ON (U.USERNAME = AE.USERNAME)
+INNER JOIN USERS U ON (U.USERNAME = AE.USERNAME OR DBMS_LOB.INSTR(AE.RESPONSEJSON, U.USERNAME, 1) > 0)
 WHERE AE.REQUESTDATETIME >= $P{tFromDate} AND TRUNC(AE.REQUESTDATETIME) <= $P{tToDate} AND
 (UPPER(U.USERTYPENAME) = NVL(UPPER($P{tUserType}), U.USERTYPENAME) OR U.USERTYPENAME is null) AND 
-(AE.OPERATION like 'LOGIN' OR AE.OPERATION like 'LOGOUT%')]]>
+(AE.OPERATION like 'LOGIN' OR AE.OPERATION like 'LOGOUT%')  ORDER BY AE.REQUESTDATETIME DESC]]>
 		</queryString>
 		<field name="REQUESTDATETIME" class="java.sql.Timestamp">
 			<property name="com.jaspersoft.studio.field.label" value="REQUESTDATETIME"/>
