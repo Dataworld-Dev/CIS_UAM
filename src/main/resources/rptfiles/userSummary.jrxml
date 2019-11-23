@@ -301,6 +301,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="116" height="30" uuid="d1af3422-25c5-4db5-b7f2-83136d09ec02"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{CREATEDDATE} == null ? "" : $F{CREATEDDATE}]]></textFieldExpression>
 							</textField>
@@ -321,6 +322,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="121" height="30" uuid="3870bdff-5a60-4c27-8289-12ddb839bb5f"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{FULLNAME} == null ? "" : $F{FULLNAME}]]></textFieldExpression>
 							</textField>
@@ -341,6 +343,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="111" height="30" uuid="ec17ea32-a1e0-43ec-a12a-9961f8766b57"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERTYPE} == null ? "" : $F{USERTYPE}]]></textFieldExpression>
 							</textField>
@@ -361,6 +364,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="130" height="30" uuid="fd1588fe-8eaa-4e2a-a1f0-91d26aff800c"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{ORGANIZATION} == null ? "" : $F{ORGANIZATION}]]></textFieldExpression>
 							</textField>
@@ -381,6 +385,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="113" height="30" uuid="351d970e-0369-40e2-818c-15dc9c4e500c"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{SECTOR} == null ? "" : $F{SECTOR}]]></textFieldExpression>
 							</textField>
@@ -401,6 +406,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="143" height="30" uuid="d9a091ee-257b-41ad-be4f-209e5cf3052d"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{ROLE} == null ? "" : $F{ROLE}]]></textFieldExpression>
 							</textField>
@@ -421,6 +427,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="86" height="30" uuid="f252451c-1d01-412d-b72a-8a21f6e01b73"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{PROVINCE} == null ? "(All)" : $F{PROVINCE}]]></textFieldExpression>
 							</textField>
@@ -441,6 +448,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="151" height="30" uuid="27e3b1ca-8fba-45c4-892a-2385f01141dc"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{EMAIL} == null ? "" : $F{EMAIL}]]></textFieldExpression>
 							</textField>
@@ -461,6 +469,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="100" height="30" uuid="911f4770-3127-4ec4-8085-d223c8c11902"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{STATUS} == null ? "" : $F{STATUS}]]></textFieldExpression>
 							</textField>
@@ -481,6 +490,7 @@ USERTYPE = NVL($P{tUserType}, USERTYPE)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="110" height="30" uuid="9242f4d2-f125-4518-a575-ae1f0c4f1516"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{SECTION} == null ? "" : $F{SECTION}]]></textFieldExpression>
 							</textField>

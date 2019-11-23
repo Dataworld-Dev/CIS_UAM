@@ -213,6 +213,7 @@ ISACTIVE='D' AND USERTYPENAME = NVL($P{tUserType},  USERTYPENAME)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="277" height="30" uuid="d1af3422-25c5-4db5-b7f2-83136d09ec02"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{UPDATEDDATETIME} == null ? "" : $F{UPDATEDDATETIME}]]></textFieldExpression>
 							</textField>
@@ -233,6 +234,7 @@ ISACTIVE='D' AND USERTYPENAME = NVL($P{tUserType},  USERTYPENAME)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="320" height="30" uuid="3870bdff-5a60-4c27-8289-12ddb839bb5f"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERCODE} == null ? "" : $F{USERCODE}]]></textFieldExpression>
 							</textField>
@@ -253,6 +255,7 @@ ISACTIVE='D' AND USERTYPENAME = NVL($P{tUserType},  USERTYPENAME)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="313" height="30" uuid="ec17ea32-a1e0-43ec-a12a-9961f8766b57"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERNAME} == null ? "" : $F{USERNAME}]]></textFieldExpression>
 							</textField>
@@ -273,6 +276,7 @@ ISACTIVE='D' AND USERTYPENAME = NVL($P{tUserType},  USERTYPENAME)]]>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="271" height="30" uuid="fd1588fe-8eaa-4e2a-a1f0-91d26aff800c"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERTYPENAME} == null ? "" : $F{USERTYPENAME}]]></textFieldExpression>
 							</textField>

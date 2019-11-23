@@ -250,6 +250,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="121" height="30" uuid="8a9cfdab-0c55-48b4-9cba-ceafd07ad62b"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{REFERENCENUMBER} == null ? "" : $F{REFERENCENUMBER}]]></textFieldExpression>
 							</textField>
@@ -270,6 +271,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="106" height="30" uuid="d1af3422-25c5-4db5-b7f2-83136d09ec02"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{DATERECEIVED} == null ? "" : $F{DATERECEIVED}]]></textFieldExpression>
 							</textField>
@@ -290,6 +292,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="150" height="30" uuid="3870bdff-5a60-4c27-8289-12ddb839bb5f"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{CATEGORY} == null ? "" : $F{CATEGORY}]]></textFieldExpression>
 							</textField>
@@ -310,6 +313,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="146" height="30" uuid="ec17ea32-a1e0-43ec-a12a-9961f8766b57"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{SUBCATEGORY} == null ? "" : $F{SUBCATEGORY}]]></textFieldExpression>
 							</textField>
@@ -330,6 +334,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="105" height="30" uuid="fd1588fe-8eaa-4e2a-a1f0-91d26aff800c"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{PROVINCE} == null ? "(All)" : $F{PROVINCE}]]></textFieldExpression>
 							</textField>
@@ -350,6 +355,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="105" height="30" uuid="076d3885-a1ac-4ae0-8851-4bf3185f69aa"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{OFFICER} == null ? "" : $F{OFFICER}]]></textFieldExpression>
 							</textField>
@@ -370,6 +376,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="112" height="30" uuid="d9a091ee-257b-41ad-be4f-209e5cf3052d"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{BUSINESSRULE} == null ? "" : $F{BUSINESSRULE}]]></textFieldExpression>
 							</textField>
@@ -390,6 +397,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="116" height="30" uuid="6d2e9a86-1655-4ad4-b948-45323e7cb061"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{OVERRIDEREASON} == null ? "" : $F{OVERRIDEREASON}]]></textFieldExpression>
 							</textField>
@@ -410,6 +418,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="112" height="30" uuid="9077658f-f227-4c09-9962-c31edef1ecc2"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{OVERRIDEDATE} == null ? "" : $F{OVERRIDEDATE}]]></textFieldExpression>
 							</textField>
@@ -430,6 +439,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="108" height="30" uuid="5a2b7f70-7f1f-4e5d-b1d0-5f9ea2b89693"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERNAME} == null ? "" : $F{USERNAME}]]></textFieldExpression>
 							</textField>

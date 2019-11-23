@@ -376,6 +376,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="70" height="30" uuid="8a9cfdab-0c55-48b4-9cba-ceafd07ad62b"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{REFERENCENUMBER} == null ? "" : $F{REFERENCENUMBER}]]></textFieldExpression>
 							</textField>
@@ -396,6 +397,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="62" height="30" uuid="d1af3422-25c5-4db5-b7f2-83136d09ec02"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{REQUESTCREATEDDATE} == null ? "" : $F{REQUESTCREATEDDATE}]]></textFieldExpression>
 							</textField>
@@ -416,6 +418,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="30" uuid="3870bdff-5a60-4c27-8289-12ddb839bb5f"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{CATEGORY} == null ? "(All)" : $F{CATEGORY}]]></textFieldExpression>
 							</textField>
@@ -436,6 +439,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="87" height="30" uuid="ec17ea32-a1e0-43ec-a12a-9961f8766b57"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{SUBCATEGORY} == null ? "(All)" : $F{SUBCATEGORY}]]></textFieldExpression>
 							</textField>
@@ -456,6 +460,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="62" height="30" uuid="fd1588fe-8eaa-4e2a-a1f0-91d26aff800c"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{REQUESTEDUSER} == null ? "" : $F{REQUESTEDUSER}]]></textFieldExpression>
 							</textField>
@@ -476,6 +481,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="63" height="30" uuid="076d3885-a1ac-4ae0-8851-4bf3185f69aa"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERTYPENAME} == null ? "" : $F{USERTYPENAME}]]></textFieldExpression>
 							</textField>
@@ -496,6 +502,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="69" height="30" uuid="d9a091ee-257b-41ad-be4f-209e5cf3052d"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERROLENAME} == null ? "" : $F{USERROLENAME}]]></textFieldExpression>
 							</textField>
@@ -516,6 +523,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="71" height="30" uuid="6d2e9a86-1655-4ad4-b948-45323e7cb061"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{ORGANISATION} == null ? "(All)" : $F{ORGANISATION}]]></textFieldExpression>
 							</textField>
@@ -536,6 +544,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="71" height="30" uuid="9077658f-f227-4c09-9962-c31edef1ecc2"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{SECTOR} == null ? "" : $F{SECTOR}]]></textFieldExpression>
 							</textField>
@@ -556,6 +565,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="69" height="30" uuid="5a2b7f70-7f1f-4e5d-b1d0-5f9ea2b89693"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERPROVINCENAME} == null ? "" : $F{USERPROVINCENAME}]]></textFieldExpression>
 							</textField>
@@ -576,6 +586,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="68" height="30" uuid="9242f4d2-f125-4518-a575-ae1f0c4f1516"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{DATEALLOCATED} == null ? "" : $F{DATEALLOCATED}]]></textFieldExpression>
 							</textField>
@@ -596,6 +607,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="71" height="30" uuid="acc27e60-7fb4-4cf1-b610-6af4391c6c42"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{OFFICER} == null ? "" : $F{OFFICER}]]></textFieldExpression>
 							</textField>
@@ -616,6 +628,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="66" height="30" uuid="b71fb9a2-921f-424d-8073-bb820f3f2ee7"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{DATECOMPLETED} == null ? "" : $F{DATECOMPLETED}]]></textFieldExpression>
 							</textField>
@@ -636,6 +649,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="67" height="30" uuid="6a09b11e-7a0f-4871-b020-97a0cc3622e8"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{TURNAROUNDTIME} == null ? "" : $F{TURNAROUNDTIME}]]></textFieldExpression>
 							</textField>
@@ -656,6 +670,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField pattern="#,##0.###;(#,##0.###)" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="66" height="30" uuid="e67c36fb-1d77-4ee1-927c-24a2b008dcb8"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{REQUESTCOST} == null ? "" : $F{REQUESTCOST}]]></textFieldExpression>
 							</textField>
@@ -676,6 +691,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="66" height="30" uuid="39140f0d-3fcd-41c1-942e-16af7f517208"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{INVOICENUMBER} == null ? "" : $F{INVOICENUMBER}]]></textFieldExpression>
 							</textField>
@@ -696,6 +712,7 @@
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="63" height="30" uuid="c6f4670f-2b2d-4c1f-ab9b-adee573fe362"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{TASKSTATUS} == null ? "(All)" : $F{TASKSTATUS}]]></textFieldExpression>
 							</textField>
