@@ -877,8 +877,13 @@ public class UserController extends MessageController {
                     user.setPassword(updatePasswordDTO.getNewpassword());
                     user.setFirstLogin(updatePasswordDTO.getFirstlogin());
                     sendPasswordResetMailToUser(user);
-                }
+                } else if (updatePasswordDTO.getType().equalsIgnoreCase("adminreset")) {
+                        final int SHORT_ID_LENGTH = 8;
+                        user.setPassword(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
+                        sendPasswordAdminResetUser(user);
             }
+            }
+
             this.userService.updatePassword(user);
             userControllerResponse.setMessage("User Password Updated Successfully");
             json = gson.toJson(userControllerResponse);
@@ -892,15 +897,79 @@ public class UserController extends MessageController {
         try {
             Map<String, Object> model = new HashMap<String, Object>();
             MailDTO mailDTO = new MailDTO();
-            mailDTO.setMailSubject("User password reset");
 
-            model.put("body1", "Your password is reset Successfully");
-            //model.put("body2", "Your password is " + user.getPassword());
+            EmailTemplate template = this.email.getEmailTemplateById(25);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+            String body = mailDTO.getBody1();
+            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+            m1.put("data", body);
+            String bodyText = MessageFormat.format(m1.get("data"),user.getPassword());
+
+
+           /* mailDTO.setMailSubject("User password reset");*/
+           /* model.put("FOOTER", "CIS ADMIN");*/
+
+            mailDTO.setMailSubject(mailDTO.getSubject());
+            model.put("FOOTER", mailDTO.getFooter());
+            /*model.put("body1", "Your password is reset Successfully");*/
+            model.put("body1",bodyText);
+           /* model.put("body2", "Your password is " + user.getPassword());*/
             model.put("body2", "");
             model.put("body3", "");
             model.put("body4", "");
-            model.put("firstName", user.getFirstName() + ",");
-            model.put("FOOTER", "CIS ADMIN");
+
+           /* model.put("firstName", user.getFirstName() + ",");*/
+
+            model.put("firstName", mailDTO.getHeader()+" " +user.getFirstName() + ",");
+
+            mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
+            mailDTO.setMailTo(user.getEmail());
+            mailDTO.setModel(model);
+            sendEmail(mailDTO);
+        } catch (Exception e) {
+            log.error("Error while sending mail {}", e.getMessage());
+        }
+    }//sendPasswordChangeMailToUser
+
+
+    private void sendPasswordAdminResetUser(User user) {
+        try {
+            Map<String, Object> model = new HashMap<String, Object>();
+            MailDTO mailDTO = new MailDTO();
+
+            EmailTemplate template = this.email.getEmailTemplateById(25);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+            String body = mailDTO.getBody1();
+            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+            m1.put("data", body);
+            String bodyText = MessageFormat.format(m1.get("data"),user.getPassword());
+
+
+
+           /* mailDTO.setMailSubject("User password reset");*/
+           /* model.put("FOOTER", "CIS ADMIN");*/
+
+            mailDTO.setMailSubject(mailDTO.getSubject());
+            model.put("FOOTER", mailDTO.getFooter());
+            /*model.put("body1", "Your password is reset Successfully");*/
+            model.put("body1",bodyText);
+           /* model.put("body2", "Your password is " + user.getPassword());*/
+            model.put("body2", "");
+            model.put("body3", "");
+            model.put("body4", "");
+
+           /* model.put("firstName", user.getFirstName() + ",");*/
+
+            model.put("firstName", mailDTO.getHeader()+" " +user.getFirstName() + ",");
+
             mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
             mailDTO.setMailTo(user.getEmail());
             mailDTO.setModel(model);
@@ -914,6 +983,7 @@ public class UserController extends MessageController {
     private void sendPasswordChangeMailToUser(User user) {
         try {
             Map<String, Object> model = new HashMap<String, Object>();
+
             MailDTO mailDTO = new MailDTO();
 
             EmailTemplate template = this.email.getEmailTemplateById(16);
@@ -921,6 +991,13 @@ public class UserController extends MessageController {
             mailDTO.setSubject(template.getSubject());
             mailDTO.setFooter(template.getFooter());
             mailDTO.setHeader(template.getHeader());
+
+          /*  String body = mailDTO.getBody1();
+            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+            m1.put("data", body);
+            String bodyText = MessageFormat.format(m1.get("data"),user.getPassword());*/
+
+
 
             /*mailDTO.setMailSubject("User password updated");*/
           /*  model.put("body1", "Your password is updated Successfully");*/

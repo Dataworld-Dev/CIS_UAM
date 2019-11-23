@@ -299,11 +299,11 @@ public class RequestItemController extends MessageController {
                     for (String str1 : filePath.getFiles()) {
                         System.out.println(str1);
                         files.add(str1);
-                        ftpZipFiles(files, ftpClient, timeStamp);
+                        ftpZipFilesEmail(files, ftpClient, timeStamp);
                     }
 
 
-                    String zipFilename = "RequestItemsFtpFilesDownload" + "_" + timeStamp + ".zip";
+                    String zipFilename = "RequestDocument" + "_" + timeStamp + ".zip";
                     File firstLocalFile = new File(applicationPropertiesConfiguration.getRequestDirectoryFtpPath() + zipFilename);
 
                     MailDTO mailDTO = new MailDTO();
@@ -406,6 +406,50 @@ public class RequestItemController extends MessageController {
         sendEmail(mailDTO);
 
     }
+
+
+    public void ftpZipFilesEmail(List<String> files, FTPClient ftpClient,String timeStamp) {
+        FileOutputStream fos = null;
+        ZipOutputStream zipOut = null;
+        FileInputStream fis = null;
+
+        String zipFilename = "RequestDocument"+"_"+timeStamp+".zip";
+        try {
+
+            fos = new FileOutputStream(applicationPropertiesConfiguration.getRequestDirectoryFtpPath() + zipFilename);
+            zipOut = new ZipOutputStream(new BufferedOutputStream(fos));
+            for (String filePath : files) {
+                System.out.println("filePath is " + filePath);
+                File input = new File(filePath);
+                fis = new FileInputStream(input);
+                ZipEntry ze = new ZipEntry(input.getName());
+                zipOut.putNextEntry(ze);
+                byte[] tmp = new byte[4 * 1024];
+                int size = 0;
+                while ((size = fis.read(tmp)) != -1) {
+                    zipOut.write(tmp, 0, size);
+                }
+                zipOut.flush();
+                fis.close();
+            }
+            zipOut.close();
+            System.out.println("Done... Zipped the files...");
+
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) fos.close();
+            } catch (Exception ex) {
+
+            }
+        }
+    }//zipFiles
 
 
 
