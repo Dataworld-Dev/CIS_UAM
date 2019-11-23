@@ -79,9 +79,20 @@ public class RequestResponseLoggingFilter implements Filter {
 			log.error("Audit entry is required to log");
 			return null;
 		}
+		
 		String responseBody = new String(responseWrapper.getContentAsByteArray());
+		String operation = responseWrapper.getHeader("operation");
+		String userCode = responseWrapper.getHeader("usercode");
+		String userName = responseWrapper.getHeader("username");
+		String userType = responseWrapper.getHeader("usertype");
+		
 		auditEntry.setResponseDatetime(new Date());
 		auditEntry.setResponseJson(responseBody);
+		if(operation != null)auditEntry.setOperation(operation);
+		if(userCode != null)auditEntry.setUserCode(userCode);
+		if(userName != null)auditEntry.setUserName(userName);
+		if(userType != null)auditEntry.setUserType(userType);
+		
 		return auditEntryService.logAuditEntry(auditEntry);
 	}//logResponseAuditEntry
 	

@@ -1,36 +1,70 @@
 package com.dw.ngms.cis.uam.controller;
 
-import com.dw.ngms.cis.controller.MessageController;
-import com.dw.ngms.cis.im.entity.EmailTemplate;
-import com.dw.ngms.cis.im.service.EmailTemplateService;
-import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
+import static org.springframework.util.StringUtils.isEmpty;
 
-import com.dw.ngms.cis.uam.dto.*;
-import com.dw.ngms.cis.uam.entity.*;
-import com.dw.ngms.cis.uam.enums.ApprovalStatus;
-import com.dw.ngms.cis.uam.enums.Status;
-import com.dw.ngms.cis.uam.jsonresponse.UserControllerResponse;
-import com.dw.ngms.cis.uam.ldap.UserCredentials;
-import com.dw.ngms.cis.uam.service.*;
-import com.google.gson.Gson;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.dw.ngms.cis.controller.MessageController;
+import com.dw.ngms.cis.im.entity.EmailTemplate;
+import com.dw.ngms.cis.im.service.EmailTemplateService;
+import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
+import com.dw.ngms.cis.uam.dto.MailDTO;
+import com.dw.ngms.cis.uam.dto.RolesDTO;
+import com.dw.ngms.cis.uam.dto.UpdateAccessRightsDTO;
+import com.dw.ngms.cis.uam.dto.UpdatePasswordDTO;
+import com.dw.ngms.cis.uam.dto.UserDTO;
+import com.dw.ngms.cis.uam.dto.UserLiteDTO;
+import com.dw.ngms.cis.uam.dto.UserUpdateDTO;
+import com.dw.ngms.cis.uam.entity.ExternalRole;
+import com.dw.ngms.cis.uam.entity.ExternalUser;
+import com.dw.ngms.cis.uam.entity.ExternalUserAssistant;
+import com.dw.ngms.cis.uam.entity.ExternalUserRoles;
+import com.dw.ngms.cis.uam.entity.InternalRole;
+import com.dw.ngms.cis.uam.entity.InternalUserRoles;
+import com.dw.ngms.cis.uam.entity.Task;
+import com.dw.ngms.cis.uam.entity.User;
+import com.dw.ngms.cis.uam.enums.ApprovalStatus;
+import com.dw.ngms.cis.uam.enums.Status;
+import com.dw.ngms.cis.uam.jsonresponse.UserControllerResponse;
+import com.dw.ngms.cis.uam.ldap.UserCredentials;
+import com.dw.ngms.cis.uam.ldap.UserProfile;
+import com.dw.ngms.cis.uam.service.ExternalRoleService;
+import com.dw.ngms.cis.uam.service.ExternalUserAssistantService;
+import com.dw.ngms.cis.uam.service.ExternalUserService;
+import com.dw.ngms.cis.uam.service.InternalRoleService;
+import com.dw.ngms.cis.uam.service.InternalUserRoleService;
+import com.dw.ngms.cis.uam.service.LoginService;
+import com.dw.ngms.cis.uam.service.UserService;
+import com.google.gson.Gson;
 
-import static org.springframework.util.StringUtils.isEmpty;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -77,17 +111,24 @@ public class UserController extends MessageController {
             return generateFailureResponse(request, new Exception("Invalid credentials passed"));
         }
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(userService.isADUserExists(userCredentials.getUsername(), userCredentials.getPassword()));
+        	UserProfile userProfile = userService.isADUserExists(userCredentials.getUsername(), userCredentials.getPassword());        	
+            return ResponseEntity.status(HttpStatus.OK).headers(getResponseHeaders(userProfile, "LOGIN")).body(userProfile);
         } catch (Exception exception) {
             return generateFailureResponse(request, exception);
         }
     }//isADUserExists
 
-
-
-
-
-
+    private HttpHeaders getResponseHeaders(UserProfile userProfile, String operation) {
+    	HttpHeaders httpHeaders = new HttpHeaders(); 
+    	if(userProfile == null || userProfile.getMail() == null) return new HttpHeaders(); 
+    	try {    		
+    		httpHeaders = getResponseHeaders(this.userService.findByEmail(userProfile.getMail()), operation);
+    	}catch(Exception e) {
+    		log.error("Failed to populate response headers");
+    	}
+    	return httpHeaders;
+	}//getResponseHeaders
+    
     @PostMapping("/adUserLoginCheck")
     public ResponseEntity<?> adUserLoginCheck(HttpServletRequest request, @RequestBody @Valid UserDTO userDTO) {
         Gson gson = new Gson();
@@ -840,13 +881,24 @@ public class UserController extends MessageController {
 
             userControllerResponse.setMessage("User Logged out successfully");
             json = gson.toJson(userControllerResponse);
-            return ResponseEntity.status(HttpStatus.OK).body(json);
-
+            
+            return ResponseEntity.status(HttpStatus.OK).headers(getResponseHeaders(user, "LOGOUT")).body(json);
         } catch (Exception exception) {
             return generateFailureResponse(request, exception);
         }
     }//updatePassword*/
 
+	private HttpHeaders getResponseHeaders(User user, String operation) {		
+		HttpHeaders responseHeaders = new HttpHeaders();
+		if(operation != null)
+			responseHeaders.set("operation", operation);
+		if(user != null) {
+			responseHeaders.set("usercode", user.getUserCode());
+			responseHeaders.set("username", user.getUserName());
+			responseHeaders.set("usertype", user.getUserTypeName());
+		}
+		return responseHeaders;
+	}//getResponseHeaders	
 
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     public ResponseEntity<?> updatePassword(HttpServletRequest request, @RequestBody @Valid UpdatePasswordDTO updatePasswordDTO) throws IOException {
