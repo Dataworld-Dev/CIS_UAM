@@ -92,7 +92,8 @@
 			<![CDATA[SELECT DISTINCT AE.REQUESTDATETIME, AE.USERCODE, AE.USERNAME, U.USERTYPENAME, AE.OPERATION FROM AUDITENTRY AE 
 INNER JOIN USERS U ON (U.USERNAME = AE.USERNAME)
 WHERE AE.REQUESTDATETIME >= $P{tFromDate} AND TRUNC(AE.REQUESTDATETIME) <= $P{tToDate} AND
-(UPPER(U.USERTYPENAME) = NVL(UPPER($P{tUserType}), U.USERTYPENAME) OR U.USERTYPENAME is null) AND AE.OPERATION like 'LOGIN']]>
+(UPPER(U.USERTYPENAME) = NVL(UPPER($P{tUserType}), U.USERTYPENAME) OR U.USERTYPENAME is null) AND 
+(AE.OPERATION like 'LOGIN' OR AE.OPERATION like 'LOGOUT%')]]>
 		</queryString>
 		<field name="REQUESTDATETIME" class="java.sql.Timestamp">
 			<property name="com.jaspersoft.studio.field.label" value="REQUESTDATETIME"/>
@@ -217,6 +218,7 @@ WHERE AE.REQUESTDATETIME >= $P{tFromDate} AND TRUNC(AE.REQUESTDATETIME) <= $P{tT
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="313" height="30" uuid="d1af3422-25c5-4db5-b7f2-83136d09ec02"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{REQUESTDATETIME} == null ? "" : $F{REQUESTDATETIME}]]></textFieldExpression>
 							</textField>
@@ -237,6 +239,7 @@ WHERE AE.REQUESTDATETIME >= $P{tFromDate} AND TRUNC(AE.REQUESTDATETIME) <= $P{tT
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="270" height="30" uuid="ec17ea32-a1e0-43ec-a12a-9961f8766b57"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERNAME} == null ? "" : $F{USERNAME}]]></textFieldExpression>
 							</textField>
@@ -256,7 +259,8 @@ WHERE AE.REQUESTDATETIME >= $P{tFromDate} AND TRUNC(AE.REQUESTDATETIME) <= $P{tT
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="302" height="30" uuid="c0676f65-5b56-43c7-b5a5-063b3164e209"/>
+								<reportElement x="0" y="0" width="302" height="30" isRemoveLineWhenBlank="true" uuid="c0676f65-5b56-43c7-b5a5-063b3164e209"/>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{USERTYPENAME} == null ? "" : $F{USERTYPENAME}]]></textFieldExpression>
 							</textField>
@@ -276,7 +280,10 @@ WHERE AE.REQUESTDATETIME >= $P{tFromDate} AND TRUNC(AE.REQUESTDATETIME) <= $P{tT
 						<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="296" height="30" uuid="649cc096-cc65-4dbc-bcbc-66b83489ab07"/>
+								<reportElement x="0" y="0" width="296" height="30" uuid="649cc096-cc65-4dbc-bcbc-66b83489ab07">
+									<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+								</reportElement>
+								<box padding="2"/>
 								<textElement verticalAlignment="Middle"/>
 								<textFieldExpression><![CDATA[$F{OPERATION} == null ? "" : $F{OPERATION}]]></textFieldExpression>
 							</textField>
