@@ -102,16 +102,21 @@
 				        		<assigner type="Role" name="Information Officer"/>
 				        	</assignerList>
 		        		</target>
+		        		<target id="flow9" restRequest="restDispatch" description="dispatch">
+		        			<assignerList>
+				        		<assigner type="Role" name="Information Officer"/>
+				        	</assignerList>
+		        		</target>
 		        	</targetList>
 		        </sequenceFlow>
 		        <sequenceFlow id="flow9" name="usrState9" state="Dispatch" targetState="" restDependancy="">
 		        	<assigneeList>
-		        		<assigner type="Role" name="Information Officer"/>		        		
+		        		<assignee type="Role" name="Information Officer"/>		        		
 		        	</assigneeList>
 		        	<targetList>
 		        		<target id="flow8" restRequest="restFinalise" description="finalise">
 		        			<assignerList>
-				        		<assignee type="Role" name="Information Scrutinizer"/>
+				        		<assigner type="Role" name="Information Officer"/>
 				        	</assignerList>
 		        		</target>
 		        	</targetList>
