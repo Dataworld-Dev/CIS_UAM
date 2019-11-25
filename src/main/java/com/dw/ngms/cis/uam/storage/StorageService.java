@@ -37,10 +37,11 @@ public class StorageService {
             System.out.println("File name is " + file.getOriginalFilename());
             fileName = file.getOriginalFilename();
             String subString = fileName.substring(fileName.lastIndexOf("."));
-            System.out.println("subString name is " + subString);
+           // System.out.println("subString name is " + subString);
             if (fileName.indexOf(".") > 0)
                 fileName = fileName.substring(0, fileName.lastIndexOf("."));
             fileNameWithPdf = fileName + "_" + timeStamp + subString;
+            System.out.println("fileNameWithPdf " + fileNameWithPdf);
             Files.copy(file.getInputStream(), Paths.get(applicationPropertiesConfiguration.getUploadDirectoryPath()).resolve(fileName + "_" + timeStamp  + subString));
         } catch (Exception e) {
             throw new RuntimeException("FAIL!");

@@ -934,6 +934,7 @@ public class RequestController extends MessageController {
             }
 
         } catch (Exception exception) {
+            System.out.println("Exception is "+exception);
             return generateFailureResponse(request, exception);
         }
         return ResponseEntity.status(HttpStatus.OK).body(json);
