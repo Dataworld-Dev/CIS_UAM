@@ -627,7 +627,7 @@ public class RequestController extends MessageController {
                         form.setField("POSTAL_ADDRESS", invoiceDTO.getPostalAddress());
                         form.setField("EMAIL", invoiceDTO.getEmail());
                         form.setField("MOBILE", invoiceDTO.getMoible());
-                        form.setField("DEPOSIT", invoiceDTO.getAmount());
+                        form.setField("DEPOSIT", "R "+invoiceDTO.getAmount());
                         stamper.setFormFlattening(true);
                         stamper.close();
                     } catch (Exception e) {
