@@ -515,18 +515,35 @@ public class UserController extends MessageController {
 
 
     @RequestMapping(value = "/deleteExternalUser", method = RequestMethod.POST)
-    public ResponseEntity<?> deleteAssistant(HttpServletRequest request, @RequestBody @Valid UserDTO userDTO) throws IOException {
+    public ResponseEntity<?> deleteExternalUser(HttpServletRequest request, @RequestBody @Valid UserDTO userDTO) throws IOException {
         try {
             User user = this.userService.findByUserCode(userDTO);
             if (isEmpty(user)) {
                 return generateEmptyResponse(request, "Users are  not found");
             }
             if (!isEmpty(user)) {
-                ExternalUser externalUser = this.userService.getChildElements(userDTO.getUsercode());
+               /* ExternalUser externalUser = this.userService.getChildElements(userDTO.getUsercode());
                 user.setExternaluser(externalUser);
-                this.userService.deleteUserAndChild(user);
+                this.userService.deleteUserAndChild(user)
+
+               */
+                user.setIsActive(Status.valueOf("N")); //todo test later with srinivas garu
+                this.userService.updateUserApproval(user);
             }
-            //todo Send Email to User
+
+            //send Email to external User
+            MailDTO mailDTO = new MailDTO();
+
+            EmailTemplate template = this.email.getEmailTemplateById(27);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+
+
+            sendMailToDeleteUser(user, mailDTO);
+
+
             return ResponseEntity.status(HttpStatus.OK).body("User Deleted Successfully");
         } catch (Exception exception) {
             return generateFailureResponse(request, exception);
@@ -950,16 +967,12 @@ public class UserController extends MessageController {
             Map<String, Object> model = new HashMap<String, Object>();
             MailDTO mailDTO = new MailDTO();
 
-            EmailTemplate template = this.email.getEmailTemplateById(25);
+            EmailTemplate template = this.email.getEmailTemplateById(26);
             mailDTO.setBody1(template.getBody());
             mailDTO.setSubject(template.getSubject());
             mailDTO.setFooter(template.getFooter());
             mailDTO.setHeader(template.getHeader());
 
-            String body = mailDTO.getBody1();
-            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
-            m1.put("data", body);
-            String bodyText = MessageFormat.format(m1.get("data"),user.getPassword());
 
 
            /* mailDTO.setMailSubject("User password reset");*/
@@ -968,7 +981,7 @@ public class UserController extends MessageController {
             mailDTO.setMailSubject(mailDTO.getSubject());
             model.put("FOOTER", mailDTO.getFooter());
             /*model.put("body1", "Your password is reset Successfully");*/
-            model.put("body1",bodyText);
+            model.put("body1",mailDTO.getBody1());
            /* model.put("body2", "Your password is " + user.getPassword());*/
             model.put("body2", "");
             model.put("body3", "");
@@ -1190,6 +1203,26 @@ public class UserController extends MessageController {
 
     }
 
+
+    private void sendMailToDeleteUser(@RequestBody @Valid User user, MailDTO mailDTO) throws Exception {
+
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        model.put("firstName", mailDTO.getHeader() + " " + user.getFirstName() + " " + user.getSurname());
+        model.put("body1", mailDTO.getBody1());
+        model.put("body2", "");
+        model.put("body3", "");
+        model.put("body4", "");
+        mailDTO.setMailSubject(mailDTO.getSubject());
+        model.put("FOOTER", mailDTO.getFooter());
+        mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
+        mailDTO.setMailTo(user.getEmail());
+
+        mailDTO.setModel(model);
+        sendEmail(mailDTO);
+
+
+    }
 
     private void sendTestEmailDRDLR(MailDTO mailDTO) throws Exception {
         System.out.println("send email test with body: ");
