@@ -157,19 +157,19 @@ public class Requests implements Serializable {
     @Column(name = "ISDELETED", length = 200)
     private String isDeleted;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate = new Date();
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "REQUESTDATE", nullable = true)
     private Date requestDate = new Date();
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DELETEDDATE")
     private Date deletedDate;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFIEDDATE")
     private Date modifiedDate;
 
