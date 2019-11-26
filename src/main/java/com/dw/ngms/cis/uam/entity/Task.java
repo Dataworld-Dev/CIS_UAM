@@ -75,11 +75,11 @@ public class Task implements Serializable {
     @Column(name = "TASKSTATUS", length = 30, unique=true)
     private String taskStatus;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TASKOPENDATE")
     private Date taskOpenDate = new Date();
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TASKCLOSEDATE")
     private Date taskCloseDate;
 

@@ -949,6 +949,7 @@ public class UserController extends MessageController {
                 } else if (updatePasswordDTO.getType().equalsIgnoreCase("adminreset")) {
                         final int SHORT_ID_LENGTH = 8;
                         user.setPassword(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
+                        user.setFirstLogin(updatePasswordDTO.getFirstlogin());
                         sendPasswordAdminResetUser(user);
             }
             }
