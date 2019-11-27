@@ -49,14 +49,11 @@ public class IssueLogController extends MessageController {
     public ResponseEntity<?> saveIssueLog(HttpServletRequest request, @RequestBody @Valid IssueLog issueLog) {
         try {
             issueLog = issueLogService.saveIssueLog(issueLog);
-            System.out.println("*********** issueLog *********:"+ issueLog.toString());
             
 			if (issueLog != null) {
 				MailDTO mailDTO = new MailDTO();
 				
 				EmailTemplate template = this.email.getEmailTemplateById(12);
-				  System.out.println("Get Body :"+template.getBody());
-				  System.out.println("template:"+template.toString());
 				  
 				mailDTO.setBody1(template.getBody());
 				mailDTO.setSubject(template.getSubject());
@@ -205,7 +202,6 @@ public class IssueLogController extends MessageController {
            java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
            m1.put("data", body);
            String bodyText = MessageFormat.format(m1.get("data"),issueLog.getIssueId());
-           System.out.println("Body Text :"+ bodyText);
 
             model.put("body1", bodyText);
             model.put("body2", "");
