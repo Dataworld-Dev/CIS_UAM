@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,23 @@ public class IssueLogController extends MessageController {
     public ResponseEntity<?> saveIssueLog(HttpServletRequest request, @RequestBody @Valid IssueLog issueLog) {
         try {
             issueLog = issueLogService.saveIssueLog(issueLog);
+            System.out.println("*********** issueLog *********:"+ issueLog.toString());
+            
+			if (issueLog != null) {
+				MailDTO mailDTO = new MailDTO();
+				
+				EmailTemplate template = this.email.getEmailTemplateById(12);
+				  System.out.println("Get Body :"+template.getBody());
+				  System.out.println("template:"+template.toString());
+				  
+				mailDTO.setBody1(template.getBody());
+				mailDTO.setSubject(template.getSubject());
+				mailDTO.setFooter(template.getFooter());
+				mailDTO.setHeader(template.getHeader());
+
+				sendMailCreateLog(issueLog, mailDTO); 
+			}
+            
             if (issueLog != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(issueLog);
             }
@@ -142,13 +160,16 @@ public class IssueLogController extends MessageController {
     }
 
 
-
-
     private void sendMailToUser(@RequestBody @Valid IssueLog issueLog, MailDTO mailDTO,MailDTO mailDTO1 ) throws IOException {
         Map<String, Object> model = new HashMap<String, Object>();
         if (issueLog.getIssueStatus().equalsIgnoreCase("OPEN")) {
+        	
+    	   String body = mailDTO.getBody1();
+           java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+           m1.put("data", body);
+           String bodyText = MessageFormat.format(m1.get("data"),issueLog.getIssueId());
 
-            model.put("body1", mailDTO.getBody1());
+            model.put("body1", bodyText);
             model.put("body2", "");
             model.put("body3", "");
             model.put("body4", "");
@@ -164,6 +185,35 @@ public class IssueLogController extends MessageController {
         /*model.put("firstName", issueLog.getFullName());*/
         model.put("firstName", mailDTO.getHeader()+" " +issueLog.getFullName());
       /*  model.put("FOOTER", "CIS ADMIN");*/
+        model.put("FOOTER", mailDTO.getFooter());
+        mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
+        mailDTO.setMailTo(issueLog.getEmail());
+        mailDTO.setModel(model);
+        try {
+            sendEmail(mailDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    private void sendMailCreateLog(@RequestBody @Valid IssueLog issueLog, MailDTO mailDTO ) throws IOException {
+        Map<String, Object> model = new HashMap<String, Object>();
+       
+        	
+    	   String body = mailDTO.getBody1();
+           java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+           m1.put("data", body);
+           String bodyText = MessageFormat.format(m1.get("data"),issueLog.getIssueId());
+           System.out.println("Body Text :"+ bodyText);
+
+            model.put("body1", bodyText);
+            model.put("body2", "");
+            model.put("body3", "");
+            model.put("body4", "");
+
+        mailDTO.setMailSubject(mailDTO.getSubject());
+        model.put("firstName", mailDTO.getHeader()+" " +issueLog.getFullName());
         model.put("FOOTER", mailDTO.getFooter());
         mailDTO.setMailFrom(applicationPropertiesConfiguration.getMailFrom());
         mailDTO.setMailTo(issueLog.getEmail());
