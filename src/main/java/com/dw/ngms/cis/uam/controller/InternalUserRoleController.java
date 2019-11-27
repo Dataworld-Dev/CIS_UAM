@@ -243,7 +243,33 @@ public class InternalUserRoleController extends MessageController {
     }//getInternalUserRolesByEmail
 
 
-   
+    @GetMapping("/getInternalUserData")
+    public ResponseEntity<?> getInternalUserData(HttpServletRequest request,
+                                                    @RequestParam(required = false)  String provinceCode,
+                                                    @RequestParam(required = false)  String sectionCode) {
+        try {
+            List<InternalUserRoles> internalUserRoles = null;
+            List<User> userDto = new ArrayList<>();
+            if(!StringUtils.isEmpty(provinceCode) && (!StringUtils.isEmpty(sectionCode))) {
+                internalUserRoles = this.internalUserRoleService.getInternalUserDataWithProvinceCodeAndSectionCode(provinceCode, sectionCode);
+            }else if(!StringUtils.isEmpty(sectionCode)){
+                internalUserRoles = this.internalUserRoleService.getInternalUserDataWithSectionCode(sectionCode);
+            }else if(!StringUtils.isEmpty(provinceCode)){
+                internalUserRoles = this.internalUserRoleService.getInternalUserDataWithProvinceCode(provinceCode);
+            }
+            if(!isEmpty(internalUserRoles)){
+                return ResponseEntity.status(HttpStatus.OK).body(internalUserRoles);
+            }else{
+                return generateEmptyResponse(request, "No Internal User Roles  found");
+            }
+
+        } catch (Exception exception) {
+            return generateFailureResponse(request, exception);
+        }
+    }//getInternalUserData
+
+
+
 
 
     @GetMapping("/getInternalUserRolesByEmail")
