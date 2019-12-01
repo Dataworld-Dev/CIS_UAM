@@ -8,6 +8,11 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Created by swaroop on 2019/04/05.
  */
@@ -59,6 +64,7 @@ public class ExternalUserDTO implements Serializable {
 
     private String securityanswer3;;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createdDate;
 
     private String subscribenews;

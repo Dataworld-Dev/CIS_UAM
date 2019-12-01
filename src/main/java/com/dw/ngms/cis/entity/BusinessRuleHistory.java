@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -52,10 +54,12 @@ public class BusinessRuleHistory implements Serializable {
 	@Column(name="USERNAME", length = 255)
 	private String userName;
 		
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name="DATERECEIVED")
 	private Date dateReceived;
 	
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name="OVERRIDEDATE")
 	private Date overrideDate;

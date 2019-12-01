@@ -1,11 +1,25 @@
 package com.dw.ngms.cis.uam.entity;
 
-import com.dw.ngms.cis.uam.enums.Status;
-import lombok.*;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -30,6 +44,8 @@ public class DocumentStore implements Serializable {
 	@Column(name = "DOCUMENTPATH")
 	private String documentPath;
 
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATEDDATE")
 	private Date createdDate = new Date();
 }

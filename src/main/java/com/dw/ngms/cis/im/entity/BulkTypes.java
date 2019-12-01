@@ -1,5 +1,6 @@
 package com.dw.ngms.cis.im.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +43,8 @@ public class BulkTypes {
     private String isActive;
 
 
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFIEDDATE")
     private Date modifiedDate;
 
@@ -50,11 +52,13 @@ public class BulkTypes {
     @Column(name = "ISDELETED", length = 10, unique = true)
     private String isDeleted;
 
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DELETEDDATE")
     private Date deletedDate;
 
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate = new Date();
 

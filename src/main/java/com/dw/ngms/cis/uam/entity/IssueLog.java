@@ -1,5 +1,6 @@
 package com.dw.ngms.cis.uam.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,11 +58,12 @@ public class IssueLog implements Serializable {
     @Column(name = "RESOLVEDCOMMENTS", length = 200)
     private String resolvedComments;
 
-
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE")
     private Date createdDate = new Date();
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.DATE)
     @Column(name = "DATERESOLVED")
     private Date dateResolved;

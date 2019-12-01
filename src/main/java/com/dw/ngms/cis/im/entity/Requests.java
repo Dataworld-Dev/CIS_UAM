@@ -22,6 +22,7 @@ import javax.persistence.Transient;
 
 import com.dw.ngms.cis.uam.entity.User;
 import com.dw.ngms.cis.uam.enums.LapseStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
@@ -157,18 +158,22 @@ public class Requests implements Serializable {
     @Column(name = "ISDELETED", length = 200)
     private String isDeleted;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate = new Date();
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "REQUESTDATE", nullable = true)
     private Date requestDate = new Date();
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DELETEDDATE")
     private Date deletedDate;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFIEDDATE")
     private Date modifiedDate;

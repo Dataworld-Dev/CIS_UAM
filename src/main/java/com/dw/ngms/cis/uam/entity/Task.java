@@ -75,10 +75,12 @@ public class Task implements Serializable {
     @Column(name = "TASKSTATUS", length = 30, unique=true)
     private String taskStatus;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TASKOPENDATE")
     private Date taskOpenDate = new Date();
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TASKCLOSEDATE")
     private Date taskCloseDate;

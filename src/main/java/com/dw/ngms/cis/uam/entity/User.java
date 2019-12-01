@@ -27,6 +27,7 @@ import javax.persistence.Transient;
 
 import com.dw.ngms.cis.uam.enums.ApprovalStatus;
 import com.dw.ngms.cis.uam.enums.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -107,6 +108,8 @@ public class User implements Serializable {
     @Column(name = "ISAPPREJUSERNAME",length = 255)
     private String isApprejuserName;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ISAPPREJDATE")
     private Date isApprejDate;
 
@@ -114,10 +117,12 @@ public class User implements Serializable {
     @Column(name = "ISACTIVE", nullable = true, length = 10)
     private Status isActive = Status.Y;
 
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate = new Date();
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "UPDATEDDATETIME", nullable = true)
     private Date updatedDatetime = new Date();

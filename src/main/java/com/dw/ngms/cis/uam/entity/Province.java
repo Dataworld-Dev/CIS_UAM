@@ -17,6 +17,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.NaturalId;
 
 import com.dw.ngms.cis.uam.enums.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 import lombok.Getter;
@@ -63,7 +64,8 @@ public class Province implements Serializable {
     @Column(name = "ISACTIVE", nullable = true, length = 10)
     private Status isActive; 
     
-    @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date creationDate; 
 

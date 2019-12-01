@@ -6,6 +6,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -31,8 +34,8 @@ public class NotificationSubTypes implements Serializable {
 	@Column(name = "ISACTIVE", length = 100)
 	private String isActive;
 
-
-	@Temporal(TemporalType.DATE)
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATEDDATE", nullable = false, length = 10)
 	private Date createdDate = new Date();
 

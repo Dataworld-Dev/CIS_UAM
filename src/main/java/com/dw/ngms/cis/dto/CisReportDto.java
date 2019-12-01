@@ -7,6 +7,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.dw.ngms.cis.uam.dto.UserSummaryReportDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 import lombok.Getter;
@@ -23,8 +24,10 @@ public class CisReportDto implements Serializable {
 
 	private static final long serialVersionUID = 4248269480395418665L;
 	
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	private Date fromDate;
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	private Date toDate;
 	private String province;

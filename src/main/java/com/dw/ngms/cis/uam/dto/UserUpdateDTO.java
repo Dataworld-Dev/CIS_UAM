@@ -1,6 +1,8 @@
 package com.dw.ngms.cis.uam.dto;
 
 import com.dw.ngms.cis.uam.enums.ApprovalStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +34,7 @@ public class UserUpdateDTO implements Serializable {
     private String mobileNo;
     private String rejectionReason;
     private String isApprejuserName;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date isApprejDate;
     private ExternalUserDTO externaluser;
 

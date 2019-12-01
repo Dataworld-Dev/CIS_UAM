@@ -21,6 +21,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.dw.ngms.cis.uam.entity.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,11 +44,13 @@ public class CisNotification implements Serializable {
 	@Column(name="PAYLOAD", length = 2000)
 	private String payload;
 	
-	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATIONDATETIME")
 	private Date creationDatetime = new Date();
 	
-	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
 	@Column(name="UPDATEDATETIME")
 	private Date updateDatetime = new Date();
 	

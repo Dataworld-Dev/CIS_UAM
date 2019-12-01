@@ -7,14 +7,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.dw.ngms.cis.uam.enums.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 import lombok.Getter;
@@ -49,7 +48,8 @@ public class OrganisationType implements Serializable {
 	@Column(name = "ISACTIVE", nullable = false, length = 10)
 	private Status isActive = Status.Y;
 	
-	@Temporal(TemporalType.DATE)
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATEDDATE", nullable = false, length = 10)
 	private Date createdDate = new Date();
 
