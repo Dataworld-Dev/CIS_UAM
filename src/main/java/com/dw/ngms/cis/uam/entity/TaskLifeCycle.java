@@ -62,12 +62,12 @@ public class TaskLifeCycle implements Serializable {
     @Column(name = "TASKSTATUS", length = 30, unique=true)
     private String taskStatus;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TASKOPENDATE")
     private Date taskOpenDate = new Date();
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TASKCLOSEDATE")
     private Date taskCloseDate;
@@ -90,12 +90,12 @@ public class TaskLifeCycle implements Serializable {
     @Column(name = "ASSIGNEDUSER", length = 255)
     private String assignedUser;
     
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate = new Date();
     
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "UPDATEDDATE", nullable = true)
     private Date updatedDate = new Date();

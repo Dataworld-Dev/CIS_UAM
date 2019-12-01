@@ -53,7 +53,7 @@ public class Notifications implements Serializable {
 	@Column(name = "CREATEDBYUSERNAME")
 	private String createdByUserName;
 
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATEDDATE")
 	private Date createdDate = new Date();

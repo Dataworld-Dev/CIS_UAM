@@ -34,7 +34,7 @@ public class UserUpdateDTO implements Serializable {
     private String mobileNo;
     private String rejectionReason;
     private String isApprejuserName;
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private Date isApprejDate;
     private ExternalUserDTO externaluser;
 

@@ -158,22 +158,22 @@ public class Requests implements Serializable {
     @Column(name = "ISDELETED", length = 200)
     private String isDeleted;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate = new Date();
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "REQUESTDATE", nullable = true)
     private Date requestDate = new Date();
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DELETEDDATE")
     private Date deletedDate;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFIEDDATE")
     private Date modifiedDate;

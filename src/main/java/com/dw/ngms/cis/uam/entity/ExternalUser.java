@@ -114,7 +114,7 @@ public class ExternalUser implements Serializable {
     @Column(name = "SECURITYANSWER3", nullable = true, length = 50)
     private String securityanswer3;;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate;

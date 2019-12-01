@@ -44,7 +44,7 @@ public class DocumentStore implements Serializable {
 	@Column(name = "DOCUMENTPATH")
 	private String documentPath;
 
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATEDDATE")
 	private Date createdDate = new Date();

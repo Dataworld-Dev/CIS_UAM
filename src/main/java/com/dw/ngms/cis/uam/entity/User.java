@@ -108,7 +108,7 @@ public class User implements Serializable {
     @Column(name = "ISAPPREJUSERNAME",length = 255)
     private String isApprejuserName;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ISAPPREJDATE")
     private Date isApprejDate;
@@ -117,12 +117,12 @@ public class User implements Serializable {
     @Column(name = "ISACTIVE", nullable = true, length = 10)
     private Status isActive = Status.Y;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate = new Date();
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "UPDATEDDATETIME", nullable = true)
     private Date updatedDatetime = new Date();

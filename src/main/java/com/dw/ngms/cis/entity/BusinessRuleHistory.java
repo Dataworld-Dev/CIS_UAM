@@ -54,12 +54,12 @@ public class BusinessRuleHistory implements Serializable {
 	@Column(name="USERNAME", length = 255)
 	private String userName;
 		
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name="DATERECEIVED")
 	private Date dateReceived;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name="OVERRIDEDATE")
 	private Date overrideDate;

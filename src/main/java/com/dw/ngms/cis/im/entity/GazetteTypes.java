@@ -32,7 +32,7 @@ public class GazetteTypes {
     @Column(name = "DESCRIPTION", length = 200)
     private String description;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate = new Date();

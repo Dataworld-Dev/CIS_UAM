@@ -44,12 +44,12 @@ public class CisNotification implements Serializable {
 	@Column(name="PAYLOAD", length = 2000)
 	private String payload;
 	
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATIONDATETIME")
 	private Date creationDatetime = new Date();
 	
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
 	@Column(name="UPDATEDATETIME")
 	private Date updateDatetime = new Date();

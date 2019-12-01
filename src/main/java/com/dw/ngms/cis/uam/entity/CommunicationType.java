@@ -46,7 +46,7 @@ public class CommunicationType implements Serializable {
     @Column(name = "ISACTIVE", nullable = false, length = 10)
     private Status isActive = Status.Y; 
     
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = false)
     private Date creationDate = new Date(); 

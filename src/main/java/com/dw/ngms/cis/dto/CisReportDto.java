@@ -24,10 +24,10 @@ public class CisReportDto implements Serializable {
 
 	private static final long serialVersionUID = 4248269480395418665L;
 	
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	private Date fromDate;
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	private Date toDate;
 	private String province;

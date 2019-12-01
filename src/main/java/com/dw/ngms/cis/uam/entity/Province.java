@@ -64,7 +64,7 @@ public class Province implements Serializable {
     @Column(name = "ISACTIVE", nullable = true, length = 10)
     private Status isActive; 
     
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date creationDate; 

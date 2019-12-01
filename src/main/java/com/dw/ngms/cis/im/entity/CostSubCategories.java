@@ -71,7 +71,7 @@ public class CostSubCategories {
     @Column(name = "ISACTIVE", length = 10, unique = true)
     private String isActive;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFIEDDATE")
     private Date modifiedDate;
@@ -79,12 +79,12 @@ public class CostSubCategories {
     @Column(name = "ISDELETED", length = 10)
     private String isDeleted;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DELETEDDATE")
     private Date deletedDate;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE", nullable = true)
     private Date createdDate = new Date();

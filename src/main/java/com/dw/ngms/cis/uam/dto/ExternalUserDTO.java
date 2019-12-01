@@ -64,7 +64,7 @@ public class ExternalUserDTO implements Serializable {
 
     private String securityanswer3;;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private Date createdDate;
 
     private String subscribenews;

@@ -53,12 +53,12 @@ public class EmailTemplate {
     @Column(name = "IN_PUT_PARAMS")
     private String inputParams;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATED_DATE")
     private Date createdDate;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "MODIFIED_DATE", nullable = true)
     private Date modifiedDate = new Date();
