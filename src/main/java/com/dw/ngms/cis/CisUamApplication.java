@@ -1,7 +1,5 @@
 package com.dw.ngms.cis;
 
-import java.util.TimeZone;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -36,7 +34,7 @@ public class CisUamApplication extends SpringBootServletInitializer {
 
     @PostConstruct
     public void init(){
-      TimeZone.setDefault(TimeZone.getTimeZone("UTC+2"));
+//      TimeZone.setDefault(TimeZone.getTimeZone("UTC+2"));
     	//TimeZone.setDefault(TimeZone.getTimeZone("GMT+2"));
     }
     

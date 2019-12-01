@@ -26,7 +26,7 @@ public class IssueLog implements Serializable {
 
     @Id
     @Column(name = "ISSUELOGID")
-    @SequenceGenerator(name = "generator", sequenceName = "isuuelog_seq", allocationSize = 1)
+    @SequenceGenerator(name = "generator", sequenceName = "ISUUELOG_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "generator")
     private Long issueId;
 
@@ -58,12 +58,12 @@ public class IssueLog implements Serializable {
     @Column(name = "RESOLVEDCOMMENTS", length = 200)
     private String resolvedComments;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATEDDATE")
     private Date createdDate = new Date();
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.DATE)
     @Column(name = "DATERESOLVED")
     private Date dateResolved;

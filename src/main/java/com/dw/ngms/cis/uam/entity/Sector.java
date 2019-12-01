@@ -47,7 +47,7 @@ public class Sector implements Serializable {
     private Status isActive = Status.Y; 
     
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     @Column(name = "CREATEDDATE", nullable = true)
     private Date creationDate = new Date();
     
