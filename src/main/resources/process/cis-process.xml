@@ -111,7 +111,7 @@
 		        </sequenceFlow>
 		        <sequenceFlow id="flow9" name="usrState9" state="Dispatch" targetState="" restDependancy="">
 		        	<assigneeList>
-		        		<assignee type="Role" name="Information Officer"/>		        		
+		        		<assignee type="User" name="?"/>        		
 		        	</assigneeList>
 		        	<targetList>
 		        		<target id="flow8" restRequest="restFinalise" description="finalise">

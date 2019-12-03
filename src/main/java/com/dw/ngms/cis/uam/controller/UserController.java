@@ -1305,7 +1305,7 @@ public class UserController extends MessageController {
 
         Map<String, Object> model = new HashMap<String, Object>();
 
-        String subject = mailDTO.getMailSubject();
+        String subject = mailDTO.getSubject();
         java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
         m1.put("subject", subject);
         String subjectText = MessageFormat.format(m1.get("subject"),user.getUserTypeName().toLowerCase());
@@ -1378,7 +1378,7 @@ public class UserController extends MessageController {
 
 
        /* mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");*/
-        String subject = mailDTO.getMailSubject();
+        String subject = mailDTO.getSubject();
         java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
         m1.put("subject", subject);
         String subjectText = MessageFormat.format(m1.get("subject"),user.getUserTypeName().toLowerCase());
@@ -1414,7 +1414,7 @@ public class UserController extends MessageController {
 
        /* mailDTO.setMailSubject("New " + user.getUserTypeName().toLowerCase() + " User Registration");*/
 
-        String subject = mailDTO.getMailSubject();
+        String subject = mailDTO.getSubject();
         java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
         m1.put("subject", subject);
         String subjectText = MessageFormat.format(m1.get("subject"),user.getUserTypeName().toLowerCase());
