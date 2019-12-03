@@ -845,10 +845,43 @@ public class UserController extends MessageController {
                 user.setRejectionReason(userDTO.getRejectionreason());
                 user.setIsApprejDate(new Date());
             }
-            this.userService.updateUserApproval(user);
+          
+            User response = this.userService.updateUserApproval(user);
             MailDTO mailDTO = new MailDTO();
             MailDTO mailDTO1 = new MailDTO();
+           // Krishna Added for missing functinality on 03 Dec 2019 
+            EmailTemplate template = this.email.getEmailTemplateById(17);
+            mailDTO.setBody1(template.getBody());
+            mailDTO.setSubject(template.getSubject());
+            mailDTO.setFooter(template.getFooter());
+            mailDTO.setHeader(template.getHeader());
+            
+            
+            EmailTemplate template1 = this.email.getEmailTemplateById(18);
+            mailDTO1.setBody1(template1.getBody());
+            mailDTO1.setSubject(template1.getSubject());
+            mailDTO1.setFooter(template1.getFooter());
+            mailDTO1.setHeader(template1.getHeader());
+            // Krishna added upto here
             sendMailToUser(user, mailDTO,mailDTO1);
+            
+            //Krishna added on 03 DEC 2019
+            // inside your getSalesUserData() method
+            ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+            emailExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        sendMailToUser(response, mailDTO,mailDTO1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            emailExecutor.shutdown(); // it is very important to shutdown your non-singleton ExecutorService.
+            //Krishna added upto here
+            
             //todo Send Email to User
             return ResponseEntity.status(HttpStatus.OK).body("User Approval Updated Successfully");
         } catch (Exception exception) {
@@ -1542,4 +1575,70 @@ public class UserController extends MessageController {
     }
 
 
+	@PostMapping("/sendPasswordToEmail")
+	public ResponseEntity<?> sendPasswordToEmail(HttpServletRequest request, @RequestParam("email") String email) {
+		if (StringUtils.isEmpty(email)) {
+			return generateEmptyWithOKResponse(request, "Invalid Email Address");
+		}
+		User userInfo = this.userService.findByEmail(email);
+		if (userInfo == null) {
+			return generateEmptyWithOKResponse(request, "No record found with given Email Address");
+		}
+
+		ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+		emailExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+
+					MailDTO dto = (userInfo != null
+							&& userInfo.getIsApproved().getDisplayString().equalsIgnoreCase("YES"))
+									? getEmailTemplateInfo(17)
+									: getEmailTemplateInfo(18);
+
+					sendPasswordToUser(userInfo, dto, applicationPropertiesConfiguration.getMailFrom());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		emailExecutor.shutdown();
+
+		return ResponseEntity.status(HttpStatus.OK).body(userInfo);
+	}
+	
+	
+	private MailDTO getEmailTemplateInfo(long templateId) {
+
+		MailDTO mailDTO = new MailDTO();
+		EmailTemplate template = this.email.getEmailTemplateById(templateId);
+		mailDTO.setBody1(template.getBody());
+		mailDTO.setSubject(template.getSubject());
+		mailDTO.setFooter(template.getFooter());
+		mailDTO.setHeader(template.getHeader());
+
+		return mailDTO;
+
+	}
+	
+	private void sendPasswordToUser(@RequestBody @Valid User user, MailDTO mailDTO, String mailFrom) throws Exception {
+		Map<String, Object> model = new HashMap<String, Object>();
+		String body = mailDTO.getBody1();
+		java.util.Map<String, String> m1 = new java.util.HashMap<String, String>();
+		m1.put("data", body);
+		String bodyText = MessageFormat.format(m1.get("data"), user.getPassword());
+		model.put("firstName", mailDTO.getHeader() + " " + user.getFirstName() + " " + user.getSurname());
+		model.put("body1", bodyText);
+		model.put("body2", "");
+		model.put("body3", "");
+		model.put("body4", "");
+
+		mailDTO.setMailSubject(mailDTO.getSubject());
+		model.put("FOOTER", mailDTO.getFooter());
+		mailDTO.setMailFrom(mailFrom);
+		mailDTO.setMailTo(user.getEmail());
+		mailDTO.setModel(model);
+		sendEmail(mailDTO);
+	}
+    
 }
