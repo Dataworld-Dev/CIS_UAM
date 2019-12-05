@@ -30,4 +30,8 @@ public class SectorService {
     	return codeGeneratorService.getSectorNextCode();
 	}//getSectorCode
 
+	public void deleteSector(Sector sector) {
+		//return this.sectorRepository.deleteByCode(code);
+		this.sectorRepository.delete(sector);
+	}
 }

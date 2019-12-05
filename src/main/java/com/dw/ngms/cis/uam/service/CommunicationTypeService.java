@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dw.ngms.cis.uam.entity.CommunicationType;
+import com.dw.ngms.cis.uam.entity.Sector;
 import com.dw.ngms.cis.uam.repository.CommunicationTypeRepository;
 
 @Service
@@ -31,4 +32,8 @@ public class CommunicationTypeService {
 		return codeGeneratorService.getCommunicationTypeNextCode();
 	}//generateCommTypeCode
 
+	
+	public void deleteCommunicationType(CommunicationType communicationType) {
+		this.communicationTypeRepository.delete(communicationType);
+	}
 }

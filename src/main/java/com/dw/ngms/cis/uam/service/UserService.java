@@ -3,6 +3,8 @@ package com.dw.ngms.cis.uam.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -316,5 +318,17 @@ public class UserService {
 		}
 		return userProfile;
 	}// isADUserExists
+	
+	
+	public List<ExternalUser> existSector(@Param("sectorName") String sectorName) {
+		return userRepository.existSectors(sectorName);
+	}
 
+	public List<ExternalUser> existCommunication(@Param("communicationName") String communicationName) {
+		return userRepository.existCommunication(communicationName);
+	}
+
+	public  List<ExternalUser> existOrganization(@Param("orgName") String orgName) {
+		return userRepository.existOrganization(orgName);
+	}
 }

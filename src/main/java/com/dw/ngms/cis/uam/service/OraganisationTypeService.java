@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dw.ngms.cis.uam.entity.CommunicationType;
 import com.dw.ngms.cis.uam.entity.OrganisationType;
 import com.dw.ngms.cis.uam.repository.OrganisationTypeRepository;
 
@@ -31,4 +32,8 @@ public class OraganisationTypeService {
 	private String getOrganisationTypeCode() {
 		return codeGeneratorService.getOrganisationTypeNextCode();
 	}//getOrganisationTypeCode
+	
+	public void deleteOrganization(OrganisationType organisationType) {
+		this.organisationTypeRepository.delete(organisationType);
+	}
 }

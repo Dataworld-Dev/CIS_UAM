@@ -112,6 +112,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
    String getUserCodeForAssistant(@Param("ppno") String ppno);
 
 
-
+   @Query("select e from ExternalUser e where e.sectorname=:sectorName")
+   List<ExternalUser> existSectors(@Param("sectorName") String sectorName);
+   
+   @Query("select e from ExternalUser e where e.communicationmodetypename=:communicationName")
+   List<ExternalUser> existCommunication(@Param("communicationName") String communicationName);
+   
+   
+   @Query("select e from ExternalUser e where e.organizationtypename=:organizationtypename")
+   List<ExternalUser> existOrganization(@Param("organizationtypename") String organizationtypename);
+   
 
 }
