@@ -61,7 +61,7 @@ public class CommunicationTypeController extends MessageController {
 		
 		List<ExternalUser> extUser = this.userService.existCommunication(commTypeName);
 		if(extUser!=null && extUser.size()>0) {
-			return generateEmptyWithOKResponse(request, "Sector Name alredy used..");
+			return generateEmptyResponse(request, "Reference exists");
 		}
 		
 		CommunicationType cmmunicationType = this.communicationTypeService.getAllCommunicationTypes().stream()

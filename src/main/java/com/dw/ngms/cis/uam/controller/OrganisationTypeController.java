@@ -63,7 +63,7 @@ public class OrganisationTypeController extends MessageController {
 
 		List<ExternalUser> extUser = this.userService.existOrganization(orgName);
 		if (extUser != null && extUser.size() > 0) {
-			return generateEmptyWithOKResponse(request, "Sector Name alredy used..");
+			return generateEmptyResponse(request, "Reference exists");
 		}
 
 		OrganisationType organisationType = this.oraganisationTypeService.getAllOrganisationTypes().stream()

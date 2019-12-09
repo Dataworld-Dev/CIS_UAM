@@ -62,7 +62,7 @@ public class SectorController extends MessageController {
 		
 		List<ExternalUser> extUser = this.userService.existSector(sectorName);
 		if(extUser!=null && extUser.size()>0) {
-			return generateEmptyWithOKResponse(request, "Sector Name alredy used..");
+			return generateEmptyResponse(request, "Reference exists");
 		}
 		
 		Sector sector = this.sectorService.getAllSectors().stream()
