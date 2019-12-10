@@ -11,11 +11,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -634,8 +636,9 @@ public class RequestController extends MessageController {
                         AcroFields form = stamper.getAcroFields();
                        
                         String organization ="";
+                        String invoiceAmount = "0.00";
                      
-                        if(extUserInfo!=null && StringUtils.isEmpty(extUserInfo.getOrganizationtypename()) ) {
+                        if(extUserInfo!=null && !StringUtils.isEmpty(extUserInfo.getOrganizationtypename()) ) {
                         	organization = extUserInfo.getOrganizationtypename();
                         }
                         
@@ -689,8 +692,13 @@ public class RequestController extends MessageController {
                     form.setField("TELEPHONE", invoiceDTO.getTelephone());
                     form.setField("EMAIL", invoiceDTO.getEmail());
                     form.setField("MOBILE", invoiceDTO.getMobile());
-                    form.setField("POSTAGE_TOTAL", "R"+" "+invoiceDTO.getAmount());
-                  
+                    
+                   if(!StringUtils.isEmpty(invoiceDTO.getAmount())){
+                	   NumberFormat nf = NumberFormat.getCurrencyInstance();
+                	   invoiceAmount = nf.format(new BigDecimal(invoiceDTO.getAmount())).replace("$", "R ");
+                   }
+                   
+                    form.setField("POSTAGE_TOTAL", invoiceAmount);
                     
                     String postalAddress ="";
                     String courierAddress = "";
