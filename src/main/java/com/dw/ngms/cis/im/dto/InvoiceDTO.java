@@ -26,7 +26,7 @@ public class InvoiceDTO implements Serializable{
     private String telephone;
     private String postalAddress;
     private String email;
-    private String moible;
+    private String mobile;
     private String requestNumber;
     private String requestType;
     private String amount;

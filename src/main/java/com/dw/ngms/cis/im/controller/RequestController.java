@@ -20,8 +20,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
@@ -60,6 +62,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dw.ngms.cis.controller.MessageController;
 import com.dw.ngms.cis.im.dto.InvoiceDTO;
 import com.dw.ngms.cis.im.entity.EmailTemplate;
+import com.dw.ngms.cis.im.entity.ProvinceInformation;
 import com.dw.ngms.cis.im.entity.RequestItems;
 import com.dw.ngms.cis.im.entity.Requests;
 import com.dw.ngms.cis.im.service.ApplicationPropertiesService;
@@ -72,12 +75,14 @@ import com.dw.ngms.cis.uam.dto.MailDTO;
 import com.dw.ngms.cis.uam.dto.RequestsJsonDTO;
 import com.dw.ngms.cis.uam.dto.SendPopInfo;
 import com.dw.ngms.cis.uam.entity.DocumentStore;
+import com.dw.ngms.cis.uam.entity.ExternalUser;
 import com.dw.ngms.cis.uam.entity.InternalUserRoles;
 import com.dw.ngms.cis.uam.entity.TaskLifeCycle;
 import com.dw.ngms.cis.uam.entity.User;
 import com.dw.ngms.cis.uam.jsonresponse.UserControllerResponse;
 import com.dw.ngms.cis.uam.service.DocumentStoreService;
 import com.dw.ngms.cis.uam.service.InternalUserRoleService;
+import com.dw.ngms.cis.uam.service.ProivnceInformationService;
 import com.dw.ngms.cis.uam.service.ProvinceService;
 import com.dw.ngms.cis.uam.service.TaskService;
 import com.dw.ngms.cis.uam.service.UserService;
@@ -130,6 +135,9 @@ public class RequestController extends MessageController {
 
     @Autowired
     private JavaMailSender mailSender;
+    
+    @Autowired
+    ProivnceInformationService provInfoService;
 
     protected static void showServerReply(FTPClient ftpClient) {
         String[] replies = ftpClient.getReplyStrings();
@@ -605,29 +613,151 @@ public class RequestController extends MessageController {
                                                     @RequestBody @Valid InvoiceDTO invoiceDTO) throws IOException {
         try {
             Requests req = requestService.getRequestsByRequestCode(requestCode);
+            User userInfo = userService.findByEmail(invoiceDTO.getEmail().toLowerCase());
+            ExternalUser extUserInfo = userService.getChildElements(userInfo.getUserCode());
+            ProvinceInformation provAddrInfo = provInfoService.getProvinceInformationByCode(req.getProvinceCode());
+            
+            System.out.println("provAddrInfo :"+ provAddrInfo);
+            System.out.println("Request ::"+ req.toString());
             if (req != null) {
                 ClassPathResource template = new ClassPathResource(applicationPropertiesConfiguration.getPdfTemplate());
                 String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                 String filename = applicationPropertiesConfiguration.getFileNamePDF();
                 filename = timeStamp + "_" + filename;
+                //filename="NLC_MonitoringForm_Templete.pdf";
+               // filename="ProformaInvoice.pdf";
                 File file = new File(applicationPropertiesConfiguration.getInvoiceDirectory() + filename);
                 if (template.exists()) {
                     try {
                         PdfReader reader = new PdfReader(template.getFilename());
                         PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(file));
                         AcroFields form = stamper.getAcroFields();
-                        System.out.println("");
-                        form.setField("FULL_NAME", invoiceDTO.getFullName());
+                       
+                        String organization ="";
+                     
+                        if(extUserInfo!=null && StringUtils.isEmpty(extUserInfo.getOrganizationtypename()) ) {
+                        	organization = extUserInfo.getOrganizationtypename();
+                        }
+                        
+						if (userInfo!=null && "INTERNAL".equalsIgnoreCase(userInfo.getUserTypeName())) {
+							List<InternalUserRoles> internalUserRoles = internalUserRoleService.getInternalUserRole(userInfo.getEmail().toLowerCase());
+							if (internalUserRoles != null && !internalUserRoles.isEmpty()) {
+								organization = internalUserRoles.get(0).getRoleName();
+							}
+						}
+                      
+                        
+                        form.setField("SG_OFFICE", provAddrInfo.getProvSgOffice());
+                        form.setField("SG_ADDRESS_L1", provAddrInfo.getProvAdds1());
+                        form.setField("SG_ADDRESS_L2",  provAddrInfo.getProvAdds2());
+                        form.setField("SG_ADDRESS_L3",  provAddrInfo.getProvAdds3());
+                        form.setField("SG_PHONE",  provAddrInfo.getProvPhone());
+                        form.setField("SG_FAX", provAddrInfo.getProvFax());
+                        form.setField("SG_EMAIL",provAddrInfo.getProvEmail());
+                        
+                        form.setField("SG_BANK_ACCHLDR",provAddrInfo.getProvBankAccHldr());
+                        form.setField("SG_BANK_NAME",provAddrInfo.getProvBankName());
+                        form.setField("SG_BANK_BRANCHC",provAddrInfo.getProvBankBranchCode());
+                        form.setField("SG_BANK_ACCNUM",provAddrInfo.getProvBankAccNo());
+                        form.setField("SG_BANK_ACCTYPE",provAddrInfo.getProvBankAccType());
+                        
+                        String fullName = userInfo!=null ? userInfo.getFirstName() +" "+ userInfo.getSurname() : invoiceDTO.getFullName() ;
+                        
+                        form.setField("FULL_NAME", fullName);
                         SimpleDateFormat fmt = new SimpleDateFormat("dd MMMM yyyy");
                         form.setField("DATE", fmt.format(new Date()));
-                        form.setField("ORGANIZATION", invoiceDTO.getOrgnization());
+                        form.setField("ORGANIZATION", organization);
                         form.setField("REQUEST_NUMBER", invoiceDTO.getRequestNumber());
-                        form.setField("REQUEST_TYPE", invoiceDTO.getRequestType());
-                        form.setField("TELEPHONE", invoiceDTO.getTelephone());
-                        form.setField("POSTAL_ADDRESS", invoiceDTO.getPostalAddress());
-                        form.setField("EMAIL", invoiceDTO.getEmail());
-                        form.setField("MOBILE", invoiceDTO.getMoible());
-                        form.setField("DEPOSIT", "R "+invoiceDTO.getAmount());
+                      
+                        List<RequestItems> items = req.getRequestItems();
+                        Set<String> g1 = new HashSet<String>();
+                        Set<String> g2 = new HashSet<String>();
+                        
+						for (RequestItems item : items) {
+							if (item.getRequestGazetteType() != null
+									&& "REQUEST".equalsIgnoreCase(item.getRequestGazetteType())) {
+								g2.add(item.getGazetteType2());
+								g1.add(item.getGazetteType1());
+							}
+						}
+                       
+                     form.setField("REQUEST_TYPE", g2.toString().replace("[","").replace("]", ""));
+                     form.setField("REQUEST_SUBTYPE", invoiceDTO.getRequestType());
+                     
+                    form.setField("DATA_REQUESTED",  g1.toString().replace("[","").replace("]", ""));
+                    form.setField("FORMAT", req.getFormatType());
+                    form.setField("TELEPHONE", invoiceDTO.getTelephone());
+                    form.setField("EMAIL", invoiceDTO.getEmail());
+                    form.setField("MOBILE", invoiceDTO.getMobile());
+                    form.setField("POSTAGE_TOTAL", "R"+" "+invoiceDTO.getAmount());
+                  
+                    
+                    String postalAddress ="";
+                    String courierAddress = "";
+					if (extUserInfo != null) {
+						postalAddress = extUserInfo.getPostaladdressline1() + " ,"
+								+ extUserInfo.getPostaladdressline2() + " ," + extUserInfo.getPostaladdressline3()
+								+ " ," + extUserInfo.getPostalcode();
+					}
+                    courierAddress= courierAddress +req.getPostalAddress1();
+                  
+                    if(!StringUtils.isEmpty(req.getPostalAddress2())) {
+                    	courierAddress=courierAddress+" , "+req.getPostalAddress2();
+                    }
+                    if(!StringUtils.isEmpty(req.getPostalAddress3())) {
+                    	courierAddress=courierAddress+" , "+req.getPostalAddress3();
+                    }
+                    
+                                    
+                    
+					if (req.getDeliveryMethod() != null && ("Courier".equalsIgnoreCase(req.getDeliveryMethod()))) {
+						form.setField("COURIER_DETAILS",StringUtils.isEmpty(courierAddress) ? "" : courierAddress);
+					} 
+						
+					form.setField("POSTAL_ADDRESS", StringUtils.isEmpty(postalAddress) ? "" : postalAddress.toString());
+					
+					
+					if (req.getDeliveryMethod() != null &&"Electronic(Email)".equalsIgnoreCase(req.getDeliveryMethod())) {
+						form.setField("EMAIL_DELIVERY", req.getEmail());
+					}
+                    
+					if("Electronic(CD)".equalsIgnoreCase(req.getFormatType())){
+						form.setField("CD", "Y");
+					}
+					
+					if("Electronic(CD)".equalsIgnoreCase(req.getFormatType())){
+						form.setField("CD", "Y");
+					}
+					
+					if("Electronic(CD)".equalsIgnoreCase(req.getFormatType())){
+						form.setField("CD", "Y");
+						form.setField("CD_DELIVERY", "Y");
+					}
+					
+					if("Electronic(HDD)".equalsIgnoreCase(req.getFormatType())){
+						form.setField("HDD", "Y");
+						form.setField("HDD_DELIVERY", "Y");
+					}
+					
+					if("Electronic(DVD)".equalsIgnoreCase(req.getFormatType())){
+						form.setField("DVD", "Y");
+						form.setField("DVD_DELIVERY", "Y");
+					}
+						/*
+						 * Hard Copy Electronic(FTP) Electronic(CD) Electronic(Email) Electronic(HDD)
+						 * Electronic(DVD) Hard Copy (Laminated)
+						 */
+					
+					
+					
+                    if(req.getDeliveryMethod()!=null && 
+                    		("Courier".equalsIgnoreCase(req.getDeliveryMethod()) 
+                    				|| "fax".equalsIgnoreCase(req.getDeliveryMethod())
+                    				||"Collection".equalsIgnoreCase(req.getDeliveryMethod())
+                    				||"Electronic(FTP)".equalsIgnoreCase(req.getDeliveryMethod())
+                    				||"Electronic(Email)".equalsIgnoreCase(req.getDeliveryMethod())) ){
+                    	form.setField("OTHER", req.getDeliveryMethod());
+                    }
                         stamper.setFormFlattening(true);
                         stamper.close();
                     } catch (Exception e) {
@@ -651,6 +781,7 @@ public class RequestController extends MessageController {
             }
 
         } catch (Exception exception) {
+        	System.out.println("Exception..........");
             return generateFailureResponse(request, exception);
         }
         return generateEmptyResponse(request, "No Request found with requestCode " + requestCode);
