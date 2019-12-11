@@ -684,10 +684,13 @@ public class RequestController extends MessageController {
 							}
 						}
                        
-                     form.setField("REQUEST_TYPE", g2.toString().replace("[","").replace("]", ""));
+						form.setField("REQUEST_TYPE",  g1.toString().replace("[","").replace("]", ""));
+						form.setField("DATA_REQUESTED", g2.toString().replace("[","").replace("]", ""));
+						
+                     //form.setField("REQUEST_TYPE", g2.toString().replace("[","").replace("]", ""));
                      form.setField("REQUEST_SUBTYPE", invoiceDTO.getRequestType());
                      
-                    form.setField("DATA_REQUESTED",  g1.toString().replace("[","").replace("]", ""));
+                    //form.setField("DATA_REQUESTED",  g1.toString().replace("[","").replace("]", ""));
                     form.setField("FORMAT", req.getFormatType());
                     form.setField("TELEPHONE", invoiceDTO.getTelephone());
                     form.setField("EMAIL", invoiceDTO.getEmail());
