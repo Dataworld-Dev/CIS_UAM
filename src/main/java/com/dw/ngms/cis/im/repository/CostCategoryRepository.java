@@ -22,7 +22,7 @@ public interface CostCategoryRepository extends JpaRepository<CostCategories, UU
     Long getCategoryId();
 
 
-    @Query("SELECT u FROM CostCategories u WHERE u.isActive = 'Y' order by costCategoryId asc")
+    @Query("SELECT u FROM CostCategories u WHERE u.isActive = 'Y' order by categoryName asc")
     List<CostCategories> findActiveCategories();
 
     @Query("SELECT u FROM CostCategories u WHERE u.categoryCode = :categoryCode")

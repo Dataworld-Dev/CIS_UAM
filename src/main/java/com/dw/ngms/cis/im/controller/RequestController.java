@@ -676,13 +676,22 @@ public class RequestController extends MessageController {
                         Set<String> g1 = new HashSet<String>();
                         Set<String> g2 = new HashSet<String>();
                         
+                        String preparationTime = "";
+                        
 						for (RequestItems item : items) {
 							if (item.getRequestGazetteType() != null
 									&& "REQUEST".equalsIgnoreCase(item.getRequestGazetteType())) {
 								g2.add(item.getGazetteType2());
 								g1.add(item.getGazetteType1());
 							}
+							
+							if (item.getRequestGazetteType() != null
+									&& "COST_ITEM".equalsIgnoreCase(item.getRequestGazetteType())) {
+								preparationTime = item.getRequestHours();
+							}
 						}
+						
+						form.setField("PREPARATION_TIME", !isEmpty(preparationTime) ? preparationTime+" Hour(s)" :"" );
                        
 						form.setField("REQUEST_TYPE",  g1.toString().replace("[","").replace("]", ""));
 						form.setField("DATA_REQUESTED", g2.toString().replace("[","").replace("]", ""));
