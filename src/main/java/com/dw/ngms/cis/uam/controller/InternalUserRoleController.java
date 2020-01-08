@@ -228,9 +228,12 @@ public class InternalUserRoleController extends MessageController {
 
             if(!isEmpty(internalUserRoles)){
                 for(InternalUserRoles in: internalUserRoles){
-                    in.getUserCode();
                     User user = this.userService.findByUserCode(in.getUserCode());
-                    userDto.add(user);
+                    System.out.println("User Active Status :"+user.getIsActive().getStatus());
+					if (!isEmpty(user.getIsActive().getStatus())
+							&& user.getIsActive().getStatus().equalsIgnoreCase("Active")) {
+						userDto.add(user);
+					}
                 }
                return ResponseEntity.status(HttpStatus.OK).body(userDto);
            }else{
