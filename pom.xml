@@ -231,7 +231,10 @@
 			<artifactId>olap4j</artifactId>
 			<version>1.2.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->

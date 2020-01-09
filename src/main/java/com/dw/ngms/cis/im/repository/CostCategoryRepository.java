@@ -27,6 +27,9 @@ public interface CostCategoryRepository extends JpaRepository<CostCategories, UU
 
     @Query("SELECT u FROM CostCategories u WHERE u.categoryCode = :categoryCode")
     CostCategories findByCategoryCode(@Param("categoryCode") String categoryCode);
+    
+    @Query("SELECT u FROM CostCategories u WHERE u.categoryName = :categoryName")
+    CostCategories findByCategoryName(@Param("categoryName") String categoryName);
 
 
 }
