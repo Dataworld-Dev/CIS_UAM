@@ -344,6 +344,8 @@ public class RequestController extends MessageController {
                                                            @RequestParam(required = false) String period) {
         try {
             Double totalSum = 0.00;
+            NumberFormat nf = NumberFormat.getCurrencyInstance(); 
+    		
             List<Requests> requestList = new ArrayList<>();
             if (StringUtils.isEmpty(provinceCode) || "all".equalsIgnoreCase(provinceCode.trim()) && period != null) {
                 if (period.equalsIgnoreCase("Week")) {
@@ -353,7 +355,6 @@ public class RequestController extends MessageController {
                     for (int i = 0; i < itemsArray.length; i++) {
                         totalSum = totalSum + Double.parseDouble(itemsArray[i].getTotalAmount());
                     }
-                    System.out.println("Total Week is" + totalSum);
                 } else if (period.equalsIgnoreCase("Month")) {
                     requestList = requestService.getAllRequestsPaidInfoByProvinceMonth();
                     Requests[] itemsArray = new Requests[requestList.size()];
@@ -361,7 +362,6 @@ public class RequestController extends MessageController {
                     for (int i = 0; i < itemsArray.length; i++) {
                         totalSum = totalSum + Double.parseDouble(itemsArray[i].getTotalAmount());
                     }
-                    System.out.println("Total Month is" + totalSum);
                 }
 
             } else if (StringUtils.isEmpty(provinceCode) || "all".equalsIgnoreCase(provinceCode.trim())) {
@@ -371,7 +371,6 @@ public class RequestController extends MessageController {
                 for (int i = 0; i < itemsArray.length; i++) {
                     totalSum = totalSum + Double.parseDouble(itemsArray[i].getTotalAmount());
                 }
-                System.out.println("Total is" + totalSum);
 
             } else if (!StringUtils.isEmpty(provinceCode.trim()) && period != null) {
                 if (period.equalsIgnoreCase("Week")) {
@@ -381,7 +380,6 @@ public class RequestController extends MessageController {
                     for (int i = 0; i < itemsArray.length; i++) {
                         totalSum = totalSum + Double.parseDouble(itemsArray[i].getTotalAmount());
                     }
-                    System.out.println("Total Week is" + totalSum);
                 } else if (period.equalsIgnoreCase("Month")) {
                     requestList = requestService.getRequestsPaidInfoByProvinceMonth(provinceCode);
                     Requests[] itemsArray = new Requests[requestList.size()];
@@ -389,7 +387,6 @@ public class RequestController extends MessageController {
                     for (int i = 0; i < itemsArray.length; i++) {
                         totalSum = totalSum + Double.parseDouble(itemsArray[i].getTotalAmount());
                     }
-                    System.out.println("Total Month is" + totalSum);
                 }
             } else if (!StringUtils.isEmpty(provinceCode.trim())) {
                 requestList = requestService.getRequestsPaidInfoByProvince(provinceCode);
@@ -398,13 +395,12 @@ public class RequestController extends MessageController {
                 for (int i = 0; i < itemsArray.length; i++) {
                     totalSum = totalSum + Double.parseDouble(itemsArray[i].getTotalAmount());
                 }
-                System.out.println("Total value  is" + totalSum);
-
             }
             requestList.forEach(r -> {r.setCurrentStatus(getRequestStatus(r.getRequestCode()));});
+            System.out.println("Test ::"+ nf.format(new BigDecimal(totalSum)).replace("$", ""));
             
-            return (CollectionUtils.isEmpty(requestList)) ? ResponseEntity.status(HttpStatus.OK).body(totalSum)
-                    : ResponseEntity.status(HttpStatus.OK).body(totalSum);
+            return (CollectionUtils.isEmpty(requestList)) ? ResponseEntity.status(HttpStatus.OK).body(nf.format(new BigDecimal(totalSum)).replace("$", ""))
+                    : ResponseEntity.status(HttpStatus.OK).body(nf.format(new BigDecimal(totalSum)).replace("$", ""));
         } catch (Exception exception) {
             return generateFailureResponse(request, exception);
         }

@@ -7,11 +7,13 @@ import com.dw.ngms.cis.im.service.ApplicationPropertiesService;
 import com.dw.ngms.cis.im.service.EmailTemplateService;
 import com.dw.ngms.cis.im.service.RequestItemService;
 import com.dw.ngms.cis.im.service.RequestService;
+import com.dw.ngms.cis.uam.service.TaskService;
 import com.dw.ngms.cis.uam.configuration.ApplicationPropertiesConfiguration;
 import com.dw.ngms.cis.uam.dto.FilePathsDTO;
 import com.dw.ngms.cis.uam.dto.MailDTO;
 import com.dw.ngms.cis.uam.entity.ExternalUser;
 import com.dw.ngms.cis.uam.entity.User;
+import com.dw.ngms.cis.uam.entity.Task;
 import com.dw.ngms.cis.uam.jsonresponse.UserControllerResponse;
 import com.dw.ngms.cis.uam.service.UserService;
 import com.google.gson.Gson;
@@ -73,6 +75,9 @@ public class RequestItemController extends MessageController {
 
     @Autowired
     private RequestService requestService;
+    
+    @Autowired
+    private TaskService taskService;
 
    /*@GetMapping("/getRequestsOfUser")
     public ResponseEntity<?> getRequestsOfUser(HttpServletRequest request,
@@ -142,6 +147,7 @@ public class RequestItemController extends MessageController {
         FTPClient ftpClient = new FTPClient();
         String str = null;
         List<String> filesExist = new ArrayList<>();
+        double totalFileSize = 0.0;
         try {
             List<RequestItems> requestItemsList = requestItemService.getRequestsByRequestCode(requestItems.getRequestCode());
             System.out.println("size is "+requestItemsList.size());
@@ -154,13 +160,21 @@ public class RequestItemController extends MessageController {
                          fileName = items.getFtpSiteUrl().substring(index + 1);
                         System.out.println("File Name is " + fileName);
                     }
+                 
+                 
+                 if (items.getRequestGazetteType() != null
+							&& "REQUEST".equalsIgnoreCase(items.getRequestGazetteType())) {
+                 	System.out.println("items ::"+ items.toString());
+                 	JSONObject obj = new JSONObject(items.getResultJson());
+                     String imageSize = obj.getString("mbSize");
+                     System.out.println("*************** pageName **********:"+ imageSize);
+                     totalFileSize = totalFileSize + Double.parseDouble(imageSize);
+
+					}
 
                     if (items.getFtpSiteUrl() != null && !items.getFtpSiteUrl().isEmpty()) {
-                        System.out.println("items url is " + items.getFtpSiteUrl());
                         InputStream inputStream = new URL(items.getFtpSiteUrl()).openStream();
                         Files.copy(inputStream, Paths.get(applicationPropertiesConfiguration.getRequestDirectoryLocalPath() + fileName), StandardCopyOption.REPLACE_EXISTING);
-                        System.out.println("items open");
-
                         filesExist.add(applicationPropertiesConfiguration.getRequestDirectoryLocalPath() + fileName);
                         userControllerResponse.setFiles(filesExist);
                         json = gson.toJson(userControllerResponse);
@@ -172,6 +186,12 @@ public class RequestItemController extends MessageController {
                     }
                 }
 
+				Task t1 = this.updateTaskStatus(totalFileSize, requestItems.getRequestCode());
+				
+				if (t1 == null) {
+					return generateEmptyWithOKResponse(request, " ");
+				}
+                
                 String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
                 if (str != null && !str.isEmpty()) {
@@ -261,6 +281,7 @@ public class RequestItemController extends MessageController {
         try {
             List<RequestItems> requestItemsList = requestItemService.getRequestsByRequestCode(requestItems.getRequestCode());
             System.out.println("size is "+requestItemsList.size());
+            double totalFileSize = 0.00;
             if (requestItemsList.size()>0) {
                 for (RequestItems items : requestItemsList) {
                     String fileName = null;
@@ -270,6 +291,18 @@ public class RequestItemController extends MessageController {
                         fileName = items.getFtpSiteUrl().substring(index + 1);
                         System.out.println("File Name is " + fileName);
                     }
+                    
+                    
+                    
+                    if (items.getRequestGazetteType() != null
+							&& "REQUEST".equalsIgnoreCase(items.getRequestGazetteType())) {
+                    	System.out.println("items ::"+ items.toString());
+                    	JSONObject obj = new JSONObject(items.getResultJson());
+                        String imageSize = obj.getString("mbSize");
+                        System.out.println("*************** pageName **********:"+ imageSize);
+                        totalFileSize = totalFileSize + Double.parseDouble(imageSize);
+
+					}
 
                     if (items.getFtpSiteUrl() != null && !items.getFtpSiteUrl().isEmpty()) {
                         System.out.println("items url is " + items.getFtpSiteUrl());
@@ -288,6 +321,13 @@ public class RequestItemController extends MessageController {
                     }
                 }
 
+                Task t1 = this.updateTaskStatus(totalFileSize, requestItems.getRequestCode());
+                
+                if(t1 == null) {
+                	return generateEmptyWithOKResponse(request, " ");
+                }
+                
+                
                 String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
                 if (str != null && !str.isEmpty()) {
@@ -341,6 +381,28 @@ public class RequestItemController extends MessageController {
     }
 
 
+    private Task updateTaskStatus(double totalFileSize, String requestCode) {
+    	 System.out.println("----------------------"+appPropertiesService.getProperty("SINGLE_REQUEST_SIZE").getKeyValue());
+         String configValue = appPropertiesService.getProperty("SINGLE_REQUEST_SIZE").getKeyValue();
+         double configSize = (!isEmpty(configValue)) ? (Double.valueOf(configValue)/1024d) : 0.0 ;
+         System.out.println("Test conf size :"+ configSize);
+         System.out.println("******* Total File Size ******* :"+ totalFileSize);
+         Task updatedTask = null;
+         if(totalFileSize <= configSize) {
+         	System.out.println("Sample");
+         	updatedTask = taskService.getTask(requestCode);
+         	
+         	updatedTask.setTaskStatus("Closed");
+         	updatedTask.setUpdatedDate(new Date());
+         	
+         	updatedTask = taskService.saveTask(updatedTask);
+         	
+         }else {
+        	 return null;
+         }
+         return updatedTask;
+    }
+    
 
     private void sendMailWithAttachment(RequestItems requestItems, MailDTO mailDTO, String fileName, File file) throws Exception {
         String firstName = null;

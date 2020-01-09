@@ -229,7 +229,6 @@ public class InternalUserRoleController extends MessageController {
             if(!isEmpty(internalUserRoles)){
                 for(InternalUserRoles in: internalUserRoles){
                     User user = this.userService.findByUserCode(in.getUserCode());
-                    System.out.println("User Active Status :"+user.getIsActive().getStatus());
 					if (!isEmpty(user.getIsActive().getStatus())
 							&& user.getIsActive().getStatus().equalsIgnoreCase("Active")) {
 						userDto.add(user);
