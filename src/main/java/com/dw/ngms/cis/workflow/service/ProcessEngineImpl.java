@@ -279,6 +279,7 @@ public class ProcessEngineImpl implements ProcessEngine<Task>{
 	private void populateAssigneeUserAndRoleLists(ProcessAdditionalInfo additionalInfo, List<Assignee> assigneeList, 
 			Set<InternalRole> roleList, Set<User> userList) {
 		if(!CollectionUtils.isEmpty(assigneeList)) {
+			System.out.println("Assaignee List :"+ assigneeList);
 			assigneeList.forEach(assignee -> {
 				if("Role".equalsIgnoreCase(assignee.getType())) {
 					if(isValidAssignee(assignee.getName())) {
@@ -289,7 +290,10 @@ public class ProcessEngineImpl implements ProcessEngine<Task>{
 					}
 				} else {
 					if(isValidAssignee(assignee.getName()))
-						userList.add(userRepository.findByLoginName(assignee.getName()));
+						if(userRepository.findByLoginName(assignee.getName())!=null) {
+							userList.add(userRepository.findByLoginName(assignee.getName()));
+						}
+						//userList.add(userRepository.findByLoginName(assignee.getName()));  // commented by Krishna due to application flaw
 				}
 			});			
 		}
