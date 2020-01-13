@@ -179,7 +179,7 @@ public class IssueLogController extends MessageController {
 
         } else  if (issueLog.getIssueStatus().equalsIgnoreCase("CLOSED"))  {
             model.put("body1", mailDTO1.getBody1());
-            model.put("body2", "");
+            model.put("body2", issueLog.getResolvedComments());
             model.put("body3", "");
             model.put("body4", "");
 
