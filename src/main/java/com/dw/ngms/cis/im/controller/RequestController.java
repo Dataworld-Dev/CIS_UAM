@@ -687,7 +687,7 @@ public class RequestController extends MessageController {
 							}
 						}
 						
-						form.setField("PREPARATION_TIME", !isEmpty(preparationTime) ? preparationTime+" Hour(s)" :"" );
+						form.setField("PREPARATION_TIME", !isEmpty(preparationTime) ? preparationTime+" Minutes " :"" );
                        
 						form.setField("REQUEST_TYPE",  g1.toString().replace("[","").replace("]", ""));
 						form.setField("DATA_REQUESTED", g2.toString().replace("[","").replace("]", ""));
