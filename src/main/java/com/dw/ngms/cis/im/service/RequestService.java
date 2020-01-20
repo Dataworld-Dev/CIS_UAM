@@ -124,13 +124,20 @@ public class RequestService {
 		Requests request = getRequestsByRequestCode(requestCode);
 		
 		if (request == null)
-			throw new RuntimeException("No request found, code: "+requestCode);
+			{
+			return false;
+			}
+			
+			//throw new RuntimeException("No request found, code: "+requestCode);
 		
 		this.updateAndPersistRequest(isLapsed, request);
 
 		Boolean isProcessed = this.populateAndSendMail(request, lapseTime, isLapsed);
 		if(!isProcessed)
-			throw new RuntimeException("Failed to send mail on lapse request "+requestCode);
+			{
+			return false;
+			}
+			//throw new RuntimeException("Failed to send mail on lapse request "+requestCode);
 
 		log.info("Lapse request updated successfully");
 		

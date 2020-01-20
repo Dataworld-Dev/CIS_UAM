@@ -426,22 +426,50 @@ public class RequestController extends MessageController {
         }
     }//RequestController
 
-    @GetMapping("/updateRequestOnLapse")
-    public ResponseEntity<?> updateRequestOnLapse(HttpServletRequest request,
-                                                  @RequestParam @Valid String reuestcode, @RequestParam @Valid Integer lapsetime,
-                                                  @RequestParam @Valid boolean islapsed) {
+	@GetMapping("/updateRequestOnLapse")
+	public ResponseEntity<?> updateRequestOnLapse(HttpServletRequest request,
+			@RequestParam(name = "requestcode") String requestcode, @RequestParam(name = "lapsetime") Integer lapsetime,
+			@RequestParam(name = "islapsed") boolean islapsed) {
+		
+		log.info("Start processing updateRequestOnLapse");
+		
+		if (StringUtils.isEmpty(requestcode)) {
+			return generateFailureResponse(request, new Exception("Invalid request code"));
+		}
+		
+		try {
+			boolean isProcessed = requestService.updateRequestOnLapse(requestcode, lapsetime, islapsed);
+			return (!isProcessed) ? generateEmptyWithOKResponse(request, "Failed to update request")
+					: ResponseEntity.status(HttpStatus.OK).body("Request succesfully processed");
+		} catch (Exception exception) {
+			return generateFailureResponse(request, exception);
+		}
+	}
+    
+    
+    
+   /* @GetMapping("/setLapse")
+	public ResponseEntity<?> setLapse(HttpServletRequest request, @RequestParam(name = "requestcode") String requestcode,
+			@RequestParam (name = "lapsetime") Integer lapsetime, @RequestParam (name = "islapsed") boolean islapsed) {
         log.info("Start processing updateRequestOnLapse");
-        if (StringUtils.isEmpty(reuestcode)) {
-            return generateFailureResponse(request, new Exception("Invalid request code"));
-        }
+        
+        ArrayList<String> ls = new ArrayList<String>();
+        ls.add("REQ701");
+        
         try {
-            boolean isProcessed = requestService.updateRequestOnLapse(reuestcode, lapsetime, islapsed);
-            return (!isProcessed) ? generateFailureResponse(request, new Exception("Failed to update request")) :
+        	boolean isProcessed = false;
+        	//for(String code: ls) {
+             isProcessed = requestService.updateRequestOnLapse(requestcode, lapsetime, islapsed);
+             System.out.println("isProcessed :"+ isProcessed);
+        	//}
+            return (!isProcessed) ? generateEmptyWithOKResponse(request,"Failed to update request") :
                     ResponseEntity.status(HttpStatus.OK).body("Request succesfully processed");
         } catch (Exception exception) {
             return generateFailureResponse(request, exception);
         }
     }//updateRequestOnLapse
+	*/
+    
 
     @PostMapping("/uploadPaymentConfirmation")
     public ResponseEntity<?> handleFileUpload(HttpServletRequest request, @RequestParam("file") MultipartFile file,
